@@ -1,17 +1,17 @@
 # [Soft UI Dashboard Django](https://www.creative-tim.com/product/soft-ui-dashboard-django) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/home?status=Material%20Dashboard,%20a%20free%20Material%20Bootstrap%204%20Admin%20Template%20%E2%9D%A4%EF%B8%8F%20https%3A//bit.ly/2Lyat1Y%20%23bootstrap%20%23material%20%23design%20%23developers%20%23freebie%20%20via%20%40CreativeTim)
 
- ![version](https://img.shields.io/badge/version-1.0.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/soft-ui-dashboard-django.svg?maxAge=2592000)](https://github.com/creativetimofficial/soft-ui-dashboard-django/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/soft-ui-dashboard-django.svg?maxAge=2592000)](https://github.com/creativetimofficial/soft-ui-dashboard-django/issues?q=is%3Aissue+is%3Aclosed) [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/creative-tim-general/Lobby) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/E4aHAQy)
+![version](https://img.shields.io/badge/version-1.0.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/soft-ui-dashboard-django.svg?maxAge=2592000)](https://github.com/creativetimofficial/soft-ui-dashboard-django/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/soft-ui-dashboard-django.svg?maxAge=2592000)](https://github.com/creativetimofficial/soft-ui-dashboard-django/issues?q=is%3Aissue+is%3Aclosed) [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/creative-tim-general/Lobby) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/E4aHAQy)
 
 Open-source **[Django Template](https://www.creative-tim.com/templates/django)** crafted on top of **Soft UI Dashboard**, a modern Bootstrap 5 design. Start your development with a modern Bootstrap 5 Admin template for Django. Soft UI Dashboard is built with over 70 individual components, giving you the freedom of choosing and combining. If you want to code faster, with a smooth workflow, then you should try this template carefully developed with Django, a well-known Python Framework.
 
 <br />
 
-> Features: 
+> Features:
 
 - ✅ `Up-to-date Dependencies`
 - ✅ Theme: [Django Admin Soft](https://github.com/app-generator/django-admin-soft-dashboard)
 - ✅ **Authentication**: `Django.contrib.AUTH`, Registration
-- 🚀 `Deployment` 
+- 🚀 `Deployment`
   - `CI/CD` flow via `Render`
   - [Django Soft - Go LIVE](https://www.youtube.com/watch?v=1QVdQVSkUCI) - `video presentation`
 
@@ -23,23 +23,23 @@ Open-source **[Django Template](https://www.creative-tim.com/templates/django)**
 
 ## Table of Contents
 
-* [Versions](#versions)
-* [Demo](#demo)
-* [Quick Start](#quick-start)
-* [Documentation](#documentation)
-* [File Structure](#file-structure)
-* [Browser Support](#browser-support)
-* [Resources](#resources)
-* [Reporting Issues](#reporting-issues)
-* [Technical Support or Questions](#technical-support-or-questions)
-* [Licensing](#licensing)
-* [Useful Links](#useful-links)
+- [Versions](#versions)
+- [Demo](#demo)
+- [Quick Start](#quick-start)
+- [Documentation](#documentation)
+- [File Structure](#file-structure)
+- [Browser Support](#browser-support)
+- [Resources](#resources)
+- [Reporting Issues](#reporting-issues)
+- [Technical Support or Questions](#technical-support-or-questions)
+- [Licensing](#licensing)
+- [Useful Links](#useful-links)
 
 <br />
 
 ## Demo
 
-> To authenticate use the default credentials ***test / PaSS_123*** or create a new user on the **registration page**.
+> To authenticate use the default credentials **_test / PaSS_123_** or create a new user on the **registration page**.
 
 - **Soft UI Dashboard Django** [Login Page](https://www.creative-tim.com/live/soft-ui-dashboard-django)
 
@@ -47,7 +47,7 @@ Open-source **[Django Template](https://www.creative-tim.com/templates/django)**
 
 ## Quick start
 
-> 👉 Download the code  
+> 👉 Download the code
 
 ```bash
 $ git clone https://github.com/creativetimofficial/soft-ui-dashboard-django.git
@@ -56,7 +56,7 @@ $ cd soft-ui-dashboard-django
 
 <br />
 
-> 👉 Install modules via `VENV`  
+> 👉 Install modules via `VENV`
 
 ```bash
 $ virtualenv env
@@ -89,7 +89,7 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
-At this point, the app runs at `http://127.0.0.1:8000/`. 
+At this point, the app runs at `http://127.0.0.1:8000/`.
 
 <br />
 
@@ -106,19 +106,19 @@ The project is coded using a simple and intuitive structure presented below:
 ```bash
 < PROJECT ROOT >
    |
-   |-- core/                            
-   |    |-- settings.py                  # Project Configuration  
+   |-- core/
+   |    |-- settings.py                  # Project Configuration
    |    |-- urls.py                      # Project Routing
    |
    |-- home/
-   |    |-- views.py                     # APP Views 
+   |    |-- views.py                     # APP Views
    |    |-- urls.py                      # APP Routing
-   |    |-- models.py                    # APP Models 
-   |    |-- tests.py                     # Tests  
-   |    |-- templates/                   # Theme Customisation 
-   |         |-- includes                # 
-   |              |-- custom-footer.py   # Custom Footer      
-   |     
+   |    |-- models.py                    # APP Models
+   |    |-- tests.py                     # Tests
+   |    |-- templates/                   # Theme Customisation
+   |         |-- includes                #
+   |              |-- custom-footer.py   # Custom Footer
+   |
    |-- requirements.txt                  # Project Dependencies
    |
    |-- env.sample                        # ENV Configuration (default values)
@@ -129,39 +129,39 @@ The project is coded using a simple and intuitive structure presented below:
 
 <br />
 
-## How to Customize 
+## How to Customize
 
-When a template file is loaded in the controller, `Django` scans all template directories starting from the ones defined by the user, and returns the first match or an error in case the template is not found. 
-The theme used to style this starter provides the following files: 
+When a template file is loaded in the controller, `Django` scans all template directories starting from the ones defined by the user, and returns the first match or an error in case the template is not found.
+The theme used to style this starter provides the following files:
 
 ```bash
 < LIBRARY_ROOT >                      # This exists in ENV: LIB/admin_soft
    |
-   |-- templates/                     # Root Templates Folder 
-   |    |          
-   |    |-- accounts/       
+   |-- templates/                     # Root Templates Folder
+   |    |
+   |    |-- accounts/
    |    |    |-- login.html           # Sign IN Page
    |    |    |-- register.html        # Sign UP Page
    |    |
-   |    |-- includes/       
+   |    |-- includes/
    |    |    |-- footer.html          # Footer component
-   |    |    |-- sidebar.html         # Sidebar component
+   |    |    |-- sidebar.html         # r component
    |    |    |-- navigation.html      # Navigation Bar
    |    |    |-- scripts.html         # Scripts Component
    |    |
-   |    |-- layouts/       
+   |    |-- layouts/
    |    |    |-- base.html            # Masterpage
    |    |    |-- base-fullscreen.html # Masterpage for Auth Pages
    |    |
-   |    |-- pages/       
+   |    |-- pages/
    |         |-- index.html           # Dashboard page
    |         |-- profile.html         # Settings  Page
    |         |-- *.html               # All other pages
-   |    
+   |
    |-- ************************************************************************
 ```
 
-When the project requires customization, we need to copy the original file that needs an update (from the virtual environment) and place it in the template folder using the same path. 
+When the project requires customization, we need to copy the original file that needs an update (from the virtual environment) and place it in the template folder using the same path.
 
 > For instance, if we want to **customize the footer.html** these are the steps:
 
@@ -174,11 +174,11 @@ When the project requires customization, we need to copy the original file that 
 
 > To speed up all these steps, the **codebase is already configured** (`Steps 1, and 2`) and a `custom footer` can be found at this location:
 
-`home/templates/includes/custom_footer.html` 
+`home/templates/includes/custom_footer.html`
 
-By default, this file is unused because the `theme` expects `footer.html` (without the `custom_` prefix). 
+By default, this file is unused because the `theme` expects `footer.html` (without the `custom_` prefix).
 
-In order to use it, simply rename it to `footer.html`. Like this, the default version shipped in the library is ignored by Django. 
+In order to use it, simply rename it to `footer.html`. Like this, the default version shipped in the library is ignored by Django.
 
 In a similar way, all other files and components can be customized easily.
 
@@ -238,18 +238,18 @@ If you have questions or need help integrating the product please [contact us](h
 
 <br />
 
-## [PRO Version](https://www.creative-tim.com/product/soft-ui-dashboard-pro-django)   
+## [PRO Version](https://www.creative-tim.com/product/soft-ui-dashboard-pro-django)
 
 This design is a pixel-perfect [Bootstrap 5](https://www.admin-dashboards.com/bootstrap-5-templates/) Dashboard with a fresh, new design concept. `Soft UI Dashboard PRO` is built with over 300 frontend individual elements, like buttons, inputs, navbars, nav tabs, cards, or alerts, giving you the freedom of choosing and combining.
 
-> Features: 
+> Features:
 
 - `Up-to-date Dependencies`
 - `Design`: [Django Theme Soft PRO](https://github.com/app-generator/django-admin-soft-pro) - `PRO Version`
 - `Sections` covered by the design:
   - **Admin section** (reserved for superusers)
   - **Authentication**: `Django.contrib.AUTH`, Registration
-  - **All Pages** available in for ordinary users 
+  - **All Pages** available in for ordinary users
 - `Docker`, `Deployment`:
   - `CI/CD` flow via `Render`
 
@@ -260,4 +260,5 @@ This design is a pixel-perfect [Bootstrap 5](https://www.admin-dashboards.com/bo
 <br />
 
 ---
+
 [Soft UI Dashboard - Django Template](https://www.creative-tim.com/product/soft-ui-dashboard-django) - Provided by [Creative Tim](https://www.creative-tim.com/) and [AppSeed](https://appseed.us)
