@@ -1,0 +1,311 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Visitor Statistics
+{% endblock %}
+
+{% block content %}
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #ddd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container to hold everything */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Styling for the page title */
+        .page-title {
+            font-size: 36px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Back button styling */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #fff;
+            background-color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+
+        /* Stats summary box styling */
+        .stats-summary {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stats-summary p {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .stats-summary strong {
+            color: #2ecc71;
+        }
+
+        /* Form for filtering by date range */
+        .filter-form {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .filter-form label {
+            margin-right: 10px;
+            color: #bbb;
+        }
+
+        .filter-form input[type="date"] {
+            margin-right: 20px;
+            padding: 8px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #27ae60;
+        }
+
+        /* Filter buttons for predefined ranges */
+        .filter-buttons form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-buttons .btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-buttons .btn.active,
+        .filter-buttons .btn:hover {
+            background-color: #2ecc71;
+        }
+
+        /* Table styling */
+        .scroll {
+            overflow-x: auto;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .styled-table thead tr {
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #555;
+        }
+
+        .styled-table tbody tr:nth-child(even) {
+            background-color: #222;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #333;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Pagination styling */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .pagination .step-links a {
+            margin: 0 5px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #333;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination .step-links a:hover {
+            background-color: #555;
+        }
+
+        .pagination .current {
+            margin: 0 5px;
+            padding: 10px 15px;
+            background-color: #2ecc71;
+            border-radius: 5px;
+        }
+
+        /* Download CSV button styling */
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="{% url 'index' %}" class="back-button">Back to Home</a>
+
+    <h1 class="page-title">Visitor Statistics</h1>
+
+    <div class="stats-summary">
+        <p>Total visitors today: <strong>{{ total_visitors_today }}</strong></p>
+        <p>Total visitors all time: <strong>{{ total_visitors_all_time }}</strong></p>
+    </div>
+
+    <!-- Date Range Filter Form -->
+    <div class="filter-form">
+        <form method="GET">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+    
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+    
+            <button type="submit" class="filter-btn">Filter by Date Range</button>
+        </form>
+    </div>
+
+    <!-- Filter buttons for predefined ranges -->
+    <div class="filter-buttons">
+        <form method="GET">
+            <button type="submit" name="filter" value="today" class="btn {% if filter_type == 'today' %}active{% endif %}">
+                Today's Visitors
+            </button>
+            <button type="submit" name="filter" value="this_month" class="btn {% if filter_type == 'this_month' %}active{% endif %}">
+                This Month's Visitors ({{ total_visitors_this_month }})
+            </button>
+            <button type="submit" name="filter" value="this_year" class="btn {% if filter_type == 'this_year' %}active{% endif %}">
+                This Year's Visitors ({{ total_visitors_this_year }})
+            </button>
+        </form>
+    </div>
+    
+
+    <h2>Filtered Visit Purposes</h2>
+    <div class="scroll">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Department</th>
+                    <th>Purpose</th>
+                    <th>Review</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews_filtered %}
+                    <tr>
+                        <td>{{ review.name }}</td>
+                        <td>{{ review.email }}</td>
+                        <td>{{ review.phone_number }}</td>
+                        <td>{{ review.department.name }}</td>
+                        <td>{{ review.purpose.name }}</td>
+                        <td>{{ review.review }}</td>
+                        <td>{{ review.created_at }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="no-data">No visitors found for the selected date range or filter.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination for filtered reviews -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if reviews_filtered.has_previous %}
+                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered=1">&laquo; first</a>
+                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ reviews_filtered.number }} of {{ reviews_filtered.paginator.num_pages }}
+            </span>
+            {% if reviews_filtered.has_next %}
+                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.next_page_number }}">next</a>
+                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Download CSV Button -->
+    <form action="{% url 'export_visitor_statistics_csv' %}" method="get">
+        <button type="submit" class="download-btn">Download CSV</button>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <main class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card p-4 shadow" style="max-width: 400px; width: 100%; border-radius: 10px;">
+                <h2 class="text-center text-success mb-4">Enter Your Phone Number</h2>
+                <form method="post" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        {{ form.phone_number.label_tag }}
+                        <input type="text" name="phone_number" class="form-control" value="{{ form.phone_number.value }}">
+                    </div>
+                    <div id="errorMessage" class="text-danger text-center mb-3"></div>
+                    <button type="submit" class="btn btn-success w-100">Submit</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function validateForm() {
+            var phoneNumber = document.querySelector("input[name='phone_number']").value;
+            var errorMessage = document.getElementById("errorMessage");
+            var regex = /^[0-9]{10}$/; // Regex for exactly 10 digits
+
+            if (!regex.test(phoneNumber)) {
+                errorMessage.textContent = "Phone number must be exactly 10 digits long.";
+                return false;
+            }
+
+            errorMessage.textContent = "";
+            return true;
+        }
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
+    <script>
+        // Chart initialization code (if required)
+    </script>
+{% endblock scripts %}

@@ -42,16 +42,15 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_soft.apps.AdminSoftDashboardConfig',
+    # 'admin_soft.apps.AdminSoftDashboardConfig',
     'django.contrib.admin',
-
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "home",
+    'admin_soft',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +67,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "core.urls"
 
 HOME_TEMPLATES = os.path.join(BASE_DIR, 'home', 'templates')
+
 
 TEMPLATES = [
     {
@@ -136,6 +136,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+import sys
+
+sys.path.append(os.path.join(BASE_DIR, 'home/admin_soft'))
 
 
 # Internationalization

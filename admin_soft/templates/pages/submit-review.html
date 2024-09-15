@@ -1,0 +1,94 @@
+{% extends 'layouts/qr-base.html' %}
+{% load static %}
+
+{% block title %}Hello. Let me know what you're here for.{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4 shadow bg-dark text-light" style="max-width: 450px; width: 100%; border-radius: 10px;">
+        <div class="text-center text-light mb-4 form-heading" style="color:#FFD700 !important">Your Details </div>
+        <form method="post" id="review-form">
+            {% csrf_token %}
+            <input type="hidden" name="phone_number" value="{{ phone_number }}">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success w-100">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Thank You Popup Script -->
+{% if submitted %}
+<script>
+    window.onload = function() {
+        alert('Thank you for visiting!');
+    }
+</script>
+{% endif %}
+{% endblock %}
+
+{% block extrahead %}
+<style>
+    body {
+        background-color: #121212 !important;
+        color: #FFD700;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    label{
+        color: #e6c300;
+    }
+    .form-control, .btn {
+        border-radius: 8px;
+    }
+    .form-control {
+        background-color: #2a2a2a;
+        border: 1px solid #FFD700;
+        font-size: 12px;
+        color: #fff;
+    }
+    .form-control:focus {
+        background-color: #333;
+        border-color: #FFD700 !important;
+        color: #fff;
+    }
+    .btn-success {
+        background-color: #FFD700;
+        border: none;
+        color: #121212;
+        font-size: 16px;
+    }
+    .btn-success:hover {
+        background-color: #e6c300;
+    }
+    .card {
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
+        border: 1px solid #FFD700;
+    }
+    h2 {
+        color: #FFD700;
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .errorlist{
+        margin: 0 !important
+        
+    }
+    .errorlist li {
+        font: 12px "Helvetica Neue", Helvetica !important;
+        list-style-type: none;
+        text-decoration: none;
+        color: #c30e0e;
+    
+    }
+    .form-heading {
+        font-weight: bold;
+        font-size: 24px;
+        color: #FFD700;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}

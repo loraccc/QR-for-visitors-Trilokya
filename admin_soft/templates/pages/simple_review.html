@@ -1,0 +1,133 @@
+{% extends 'layouts/qr-base.html' %}
+{% block content %}
+<div class="container-fluid py-4">
+    <main class="d-flex justify-content-center align-items-center" ">
+        <div class="card p-4 shadow bg-dark text-light" style="max-width: 450px; width: 100%; border-radius: 10px;">
+            <div class="text-center text-light mb-4 form-heading" style="color:#FFD700 !important">Visiting Again? Welcome back!</div>
+            <form method="post" id="visitor-form">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" class="form-control bg-dark text-light" value="{{ form.name.value }}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" name="phone_number" class="form-control bg-dark text-light" value="{{ form.phone_number.value }}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" class="form-control bg-dark text-light" value="{{ form.email.value }}" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="department">Department</label>
+                    {{ form.department }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="purpose">Purpose</label>
+                    {{ form.purpose }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="other_purpose">Other Purpose</label>
+                    {{ form.other_purpose }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="review">Purpose Of Visit</label>
+                    {{ form.review }}
+                </div>
+                <button type="submit" class="btn btn-success w-100">Submit</button>
+            </form>
+
+            {% if form.errors %}
+            <div class="alert alert-danger mt-3">
+                <ul>
+                    {% for field, error in form.errors.items %}
+                        <li>{{ field }}: {{ error|join:", " }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+
+<style>
+    body {
+        background-color: #121212;
+        color: #FFD700;
+    }
+    .form-control, .btn {
+        border-radius: 8px;
+    }
+    .form-control {
+        background-color: #2a2a2a;
+        border: 1px solid #FFD700;
+        font-size: 12px;
+    }
+    .form-control:focus {
+        background-color: #333;
+        border-color: #FFD700 !important;
+        color: #fff;
+    }
+    
+    .btn-success {
+        background-color: #FFD700;
+        border: none;
+        color: #121212;
+    }
+    .btn-success:hover {
+        background-color: #e6c300;
+    }
+    .form-heading {
+        font-weight: bold;
+        font-size: 24px;
+        color: #FFD700;
+    }
+    .card {
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
+        border: 1px solid #FFD700;
+    }
+    label {
+        color: #FFD700;
+    }
+    .alert-danger {
+        background-color: #FFD700;
+        color: #121212;
+        border: 1px solid #FFD700;
+    }
+    select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #344767 !important;
+    color: #e9ecef !important;
+    background-color: #2a2a2a;
+        border: 1px solid #FFD700;
+        font-size: 12px;
+}
+
+select:focus {
+    border-color: #FFD700 !important;
+    outline: none !important;
+}
+
+select option {
+    padding: 10px;
+    font-size: 16px;
+}
+textarea{
+    border-radius: 4px;
+    background-color: #344767 !important;
+    color: #e9ecef !important;
+    background-color: #2a2a2a;
+        font-size: 12px;
+
+}
+textarea:focus {
+    border-color: #FFD700 !important;
+    outline: none !important;
+}
+</style>
+{% endblock extrahead %}

@@ -1,0 +1,271 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="dashboard-title">Dashboard</h2>
+
+    <!-- Charts -->
+    <div class="charts">
+        <div class="chart-container">
+            <div class="chart-title">Monthly Visitors Comparison</div>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Growth from Last Month</div>
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Total Visitor Statistics -->
+    <div class="statistics">
+        <div class="stat-item">
+            <div class="stat-title">Total Visitors All Time</div>
+            <p class="stat-value">{{ total_visitors_all_time }}</p>
+        </div>
+        <div class="stat-item">
+            <div class="stat-title">Total Visitors Today</div>
+            <p class="stat-value">{{ total_visitors_today }}</p>
+        </div>
+        <div class="stat-item">
+            <div class="stat-title">Total Visitors This Month</div>
+            <p class="stat-value">{{ total_visitors_this_month }}</p>
+        </div>
+        <div class="stat-item">
+            <div class="stat-title">Total Visitors This Year</div>
+            <p class="stat-value">{{ total_visitors_this_year }}</p>
+        </div>
+    </div>
+
+    <!-- Department Distribution -->
+    <div class="chart-section">
+        <div class="chart-title">Visitor Distribution by Department</div>
+        <ul class="distribution-list">
+            {% for entry in department_counts %}
+                <li>{{ entry.department__name }}: {{ entry.count }} visitors</li>
+            {% empty %}
+                <li>No data available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Purpose Distribution -->
+    <div class="chart-section">
+        <div class="chart-title">Visitor Distribution by Purpose</div>
+        <ul class="distribution-list">
+            {% for entry in purpose_counts %}
+                <li>{{ entry.purpose__name }}: {{ entry.count }} visitors</li>
+            {% empty %}
+                <li>No data available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pie Chart
+    var ctxPie = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: ['This Month', 'Last Month'],
+            datasets: [{
+                data: {{ month_data.data|safe }},
+                backgroundColor: ['#ff6384', '#36a2eb'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            var dataset = tooltipItem.dataset;
+                            var currentValue = dataset.data[tooltipItem.dataIndex];
+                            var total = dataset.data.reduce((a, b) => a + b, 0);
+                            var percentage = ((currentValue / total) * 100).toFixed(2);
+                            return `${tooltipItem.label}: ${currentValue} visitors (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+
+    // Bar Chart
+    var ctxBar = document.getElementById('barChart').getContext('2d');
+    var barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: ['This Month', 'Last Month'],
+            datasets: [{
+                label: 'Visitor Count',
+                data: {{ month_data.data|safe }},
+                backgroundColor: '#42a5f5',
+                borderColor: '#1e88e5',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        padding: 10,
+                        maxRotation: 0,
+                        minRotation: 0
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        borderDash: [5, 5]
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' visitors';
+                        },
+                        padding: 10
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `Visitors: ${tooltipItem.raw}`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutCubic'
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.charts {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.chart-title {
+    margin: 0 0 15px;
+    color: #333;
+    font-size: 1.8em;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    height: 400px; /* Adjusted for better visibility */
+}
+
+.statistics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1 1 22%;
+    text-align: center;
+}
+
+.stat-title {
+    margin: 0 0 10px;
+    color: #333 !important;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 2em;
+    color: #555;
+}
+
+.chart-section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-title {
+    margin: 0 0 15px;
+    color: #333;
+    font-size: 1.5em;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.distribution-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.distribution-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 1.2em;
+}
+
+.distribution-list li:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

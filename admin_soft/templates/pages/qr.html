@@ -1,0 +1,63 @@
+{% extends 'layouts/qr-base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="qr-container">
+    <div class="text-center text-light mb-2 form-heading" style="color:#FFD700 !important"> SCAN HERE </div>
+
+    <img src="{% static 'qr_code_review_form.png' %}" alt="QR Code Review Form" class="qr-code">
+    <p class="qr-message">Scan this QR code to access the visitor form.</p>
+</div>
+
+<footer>
+    © 2024 Your Company
+</footer>
+{% endblock content %}
+
+{% block extrastyle %}
+<style>
+    body {
+        background-color: #121212; /* Same as the dark background color */
+        color: #FFD700; /* Gold color matching the logo accent */
+    }
+
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 80px); /* Adjust the height considering the footer */
+        text-align: center;
+    }
+
+    .logo {
+        width: 150px; /* Adjust logo size as needed */
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .qr-code {
+        width: 300px; /* Adjust size as needed */
+        height: 300px;
+        margin: 20px 0;
+    }
+
+    .qr-message {
+        font-size: 1.2em;
+        color: #FFD700; /* Matching the text with the logo color */
+    }
+    .form-heading {
+        font-weight: bold;
+        font-size: 24px;
+        color: #FFD700;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #121212; /* Matching the background */
+        color: #FFD700;
+        width: 100%;
+    }
+</style>
+{% endblock extrastyle %}
