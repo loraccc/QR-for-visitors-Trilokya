@@ -69,6 +69,7 @@ ROOT_URLCONF = "core.urls"
 HOME_TEMPLATES = os.path.join(BASE_DIR, 'home', 'templates')
 
 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -147,7 +148,7 @@ sys.path.append(os.path.join(BASE_DIR, 'home/admin_soft'))
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Asia/Kathmandu'
 
 USE_I18N = True
 
