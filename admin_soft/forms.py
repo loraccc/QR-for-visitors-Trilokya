@@ -189,3 +189,24 @@ class SimpleReviewForm(forms.ModelForm):
             self.fields['name'].widget.attrs['readonly'] = 'readonly'
             self.fields['phone_number'].widget.attrs['readonly'] = 'readonly'
             self.fields['email'].widget.attrs['readonly'] = 'readonly'
+
+class Manualform(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['name', 'email', 'phone_number', 'department', 'purpose', 'other_purpose', 'review']
+        labels = {
+            'review': 'Purpose',  # Change the label for the review field to "Purpose"
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter your name'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Enter your email'}),
+            'phone_number': forms.NumberInput(attrs={'placeholder': 'Enter your phone number'}),
+            'other_purpose': forms.TextInput(attrs={'placeholder': 'Enter any other purpose'}),
+            'review': forms.Textarea(attrs={'placeholder': 'Enter the purpose of your review'}),
+        }
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        if len(str(phone_number)) != 10:  # Ensure it has exactly 10 digits
+            raise forms.ValidationError('Phone number must be exactly 10 digits.')
+        return phone_number

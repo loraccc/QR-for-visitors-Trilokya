@@ -17,7 +17,7 @@ from django.db.models.functions import ExtractMonth
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from .forms import (PhoneNumberForm,
-                    FullReviewForm,SimpleReviewForm)
+                    FullReviewForm,SimpleReviewForm ,Manualform)
 from .models import *
 from datetime import timedelta,date,datetime
 import calendar
@@ -110,7 +110,17 @@ def simple_review(request, phone_number):
         })
     
     return render(request, 'pages/simple_review.html', {'form': form, 'existing_reviews': existing_reviews})
-
+@login_required
+def manual_entry(request):
+    if request.method == 'POST':
+        form = Manualform(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('thankyou')  # Redirect to a success page after saving the form
+    else:
+        form = Manualform()
+    
+    return render(request, 'pages/manual_entry.html', {'form': form})
 
 @login_required
 def dashboard(request):

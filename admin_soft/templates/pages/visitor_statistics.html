@@ -127,7 +127,8 @@ Visitor Statistics
 
         /* Table styling */
         .scroll {
-            overflow-x: auto;
+            max-width: 100%; /* or a specific width like 800px */
+            overflow-x: auto; /* Enable horizontal scroll if necessary */
         }
 
         .styled-table {
@@ -142,10 +143,14 @@ Visitor Statistics
             text-align: left;
         }
 
-        .styled-table th,
-        .styled-table td {
-            padding: 12px 15px;
-            border: 1px solid #555;
+        .styled-table th {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 40px;
+            text-align: center;
+            border: 2px solid black;
         }
 
         .styled-table tbody tr:nth-child(even) {
@@ -154,6 +159,8 @@ Visitor Statistics
 
         .styled-table tbody tr:hover {
             background-color: #333;
+            border: 2px solid black;
+
         }
 
         .no-data {
@@ -206,6 +213,17 @@ Visitor Statistics
 
         .download-btn:hover {
             background-color: #27ae60;
+        }
+        .styled-table td {
+            max-width: 150px; /* Adjust this width as per your design */
+            white-space: nowrap; /* Prevent text from wrapping */
+            overflow: hidden; /* Hide overflowing content */
+            text-overflow: ellipsis; /* Show ellipsis (...) for long text */
+            height: 40px; /* Set a regular height for each cell */
+            vertical-align: middle; /* Center content vertically */
+            text-align: center; /* Center content horizontally */
+            border: 2px solid black;
+
         }
 
     </style>
@@ -306,6 +324,24 @@ Visitor Statistics
     <form action="{% url 'export_visitor_statistics_csv' %}" method="get">
         <button type="submit" class="download-btn">Download CSV</button>
     </form>
+    <script>
+        // Add a click event to each row
+        document.querySelectorAll('.styled-table tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                // Gather data from the clicked row
+                let name = this.querySelector('td:nth-child(1)').textContent;
+                let email = this.querySelector('td:nth-child(2)').textContent;
+                let phone = this.querySelector('td:nth-child(3)').textContent;
+                let department = this.querySelector('td:nth-child(4)').textContent;
+                let purpose = this.querySelector('td:nth-child(5)').textContent;
+                let review = this.querySelector('td:nth-child(6)').textContent;
+                let createdAt = this.querySelector('td:nth-child(7)').textContent;
+    
+                // Display data in an alert
+                alert(`Details:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nDepartment: ${department}\nPurpose: ${purpose}\nReview: ${review}\nCreated At: ${createdAt}`);
+            });
+        });
+    </script>
 
 </div>
 {% endblock %}

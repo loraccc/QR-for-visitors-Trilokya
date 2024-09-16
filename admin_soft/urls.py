@@ -2,7 +2,9 @@ from django.urls import path
 from admin_soft import views
 from django.contrib.auth import views as auth_views
 
-from .views import see_qr,submit_review,simple_review,visitor_statistics,export_visitor_statistics_csv,thank_you_view,dashboard
+from .views import (see_qr,submit_review,simple_review,
+                    visitor_statistics,export_visitor_statistics_csv,
+                    thank_you_view,dashboard,manual_entry)
 
 
 urlpatterns = [
@@ -12,6 +14,7 @@ urlpatterns = [
     path('pages/simple-review/<str:phone_number>/', simple_review, name='simple-review'),
     path('thankyou/', views.thank_you_view, name='thankyou'),  
     path('pages/dashboard/', views.dashboard, name='dashboard'),  
+    path('pages/manual/', views.manual_entry, name='manual_entry'),  
 
 
 

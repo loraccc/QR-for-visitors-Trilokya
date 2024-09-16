@@ -1,0 +1,176 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #eef2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            padding-top: 40px;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 900px;  /* Increase max-width for larger screens */
+            width: 100%; 
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Title styling */
+        .dashboard-title {
+            font-size: 30px;
+            color: #34495e;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        /* Form styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;  /* Ensures full width in small devices */
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        button {
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%; /* Button takes full width on mobile */
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile-friendly adjustments */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;  /* Allow the container to fill the mobile screen */
+                margin: 0 15px;  /* Add some margin to avoid touching the edges */
+            }
+
+            .dashboard-title {
+                font-size: 24px; /* Adjust font size for smaller screens */
+            }
+
+            input, select, textarea {
+                font-size: 14px;  /* Slightly reduce font size for mobile */
+            }
+
+            button {
+                font-size: 16px;
+                padding: 12px; /* Reduce padding for mobile */
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h2 class="dashboard-title">Hello Admin.</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="name">Name:</label>
+                {{ form.name }}
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                {{ form.phone_number }}
+                {{ form.phone_number.errors }}  <!-- Display phone number validation errors here -->
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department:</label>
+                {{ form.department }}
+            </div>
+
+            <div class="form-group">
+                <label for="purpose">Purpose:</label>
+                {{ form.purpose }}
+            </div>
+
+            <div class="form-group">
+                <label for="other_purpose">Other Purpose:</label>
+                {{ form.other_purpose }}
+            </div>
+
+            <div class="form-group">
+                <label for="review">Review:</label>
+                {{ form.review }}
+            </div>
+
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+
+{% include 'includes/footer-fullscreen.html' %}
+{% endblock %}
