@@ -17,7 +17,7 @@ from django.db.models.functions import ExtractMonth
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from .forms import (PhoneNumberForm,
-                    FullReviewForm,SimpleReviewForm)
+                    FullReviewForm,SimpleReviewForm, ManualForm)
 from .models import *
 from datetime import timedelta,date,datetime
 import calendar
@@ -282,3 +282,22 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 class UserPasswordChangeView(PasswordChangeView):
   template_name = 'accounts/password_change.html'
   form_class = UserPasswordChangeForm
+
+
+
+# manual entry
+def manual_entry(request):
+    if request.method == 'POST':
+        form = ManualForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('visitor_statistics')
+    else:
+        form = ManualForm()
+    return render(request, 'pages/manual_entry.html', {'form': form})
+
+def visitor_statistics(request):
+    reviews_filtered = ManualReport.objects.all()  # Retrieve all saved entries
+    return render(request, 'pages/visitor_statistics.html', {'reviews_filtered': reviews_filtered})
+
+

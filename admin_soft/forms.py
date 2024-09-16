@@ -5,8 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UsernameField, PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-
-from .models import Review
+from .models import Review, ManualReport
 
 class RegistrationForm(UserCreationForm):
   password1 = forms.CharField(
@@ -189,3 +188,14 @@ class SimpleReviewForm(forms.ModelForm):
             self.fields['name'].widget.attrs['readonly'] = 'readonly'
             self.fields['phone_number'].widget.attrs['readonly'] = 'readonly'
             self.fields['email'].widget.attrs['readonly'] = 'readonly'
+
+
+class ManualForm(forms.ModelForm):
+    class Meta:
+        model = ManualReport
+        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'time']  # Correct field names
+        widgets = {
+            'Purpose Of Visit': forms.Textarea(attrs={'placeholder': 'Update your Purpose here...'}),
+        }
+
+

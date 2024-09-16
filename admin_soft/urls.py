@@ -13,10 +13,11 @@ urlpatterns = [
     path('thankyou/', views.thank_you_view, name='thankyou'),  
     path('pages/dashboard/', views.dashboard, name='dashboard'),  
 
-
+    path('pages/manual_entry', views.manual_entry, name='manual'), 
 
     path('pages/visitor_statistics', visitor_statistics, name='visitor_statistics'),
     path('visitor_statistics/csv/', export_visitor_statistics_csv, name='export_visitor_statistics_csv'),
+
     # Authentication
     path('accounts/login/', views.UserLoginView.as_view(), name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
@@ -35,11 +36,4 @@ urlpatterns = [
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
 ]
-# from django.urls import path
-# from . import views
-
-# urlpatterns = [
-#     path('', views.home, name='home'),
-   
-# ]
 
