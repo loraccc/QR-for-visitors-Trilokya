@@ -68,27 +68,6 @@ class UserPasswordChangeForm(PasswordChangeForm):
     }), label="Confirm New Password")
 
 
-
-# class CustomUserCreationForm(UserCreationForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['username', 'email', 'password1', 'password2']
-#     def clean_phone_number(self):
-#         phone_number = self.cleaned_data.get('phone_number')
-#         if CustomUser.objects.filter(phone_number=phone_number).exists():
-#             raise forms.ValidationError("This phone number is already in use.")
-#         return phone_number
-    
-# class CustomAuthenticationForm(AuthenticationForm):
-#     username = forms.CharField(
-#         max_length=254,
-#         widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': 'Username'})
-#     )
-#     password = forms.CharField(
-#         strip=False,
-#         widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
-#     )
-
 def validate_phone_number_length(value):
     """
     Validator to ensure that the phone number is exactly 10 digits long.
@@ -177,25 +156,25 @@ class SimpleReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'review']
-        # fields = ['name', 'phone_number', 'email', 'review']  # Include all fields you want to handle
         widgets = {
             'Purpose Of Visit': forms.Textarea(attrs={'placeholder': 'Update your Purpose here...'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(SimpleReviewForm, self).__init__(*args, **kwargs)
-        # Set fields as read-only if needed
         if self.instance and self.instance.pk:
             self.fields['name'].widget.attrs['readonly'] = 'readonly'
             self.fields['phone_number'].widget.attrs['readonly'] = 'readonly'
             self.fields['email'].widget.attrs['readonly'] = 'readonly'
 
-class Manualform(forms.ModelForm):
+class ManualForm(forms.ModelForm):
+    created_at = forms.DateTimeField(required=True, widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM:SS'}))  # Allow manual entry of created_at
+
     class Meta:
         model = Review
-        fields = ['name', 'email', 'phone_number', 'department', 'purpose', 'other_purpose', 'review']
+        fields = ['name', 'email', 'phone_number', 'department', 'purpose', 'other_purpose', 'review', 'created_at']
         labels = {
-            'review': 'Purpose',  # Change the label for the review field to "Purpose"
+            'review': 'Purpose',  # Changed the label for the review field into "Purpose"
         }
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter your name'}),

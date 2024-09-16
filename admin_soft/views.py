@@ -1,3 +1,6 @@
+import calendar
+import csv
+
 from django.shortcuts import render, redirect,get_list_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
@@ -14,24 +17,21 @@ from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 
 
-
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
+
 from .forms import (PhoneNumberForm,
-                    FullReviewForm,SimpleReviewForm ,Manualform)
+                    FullReviewForm,SimpleReviewForm ,ManualForm)
 from .models import *
 from datetime import timedelta,date,datetime
-import calendar
-import csv
 
 
 def index(request):
     if request.method == 'POST':
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
-            # Process the phone number here
             phone_number = form.cleaned_data['phone_number']
-            # For example, redirect or save the phone number
-            return HttpResponseRedirect('')  # Redirect after successful submission
+        
+            return HttpResponseRedirect('') 
     else:
         form = PhoneNumberForm()
 
@@ -69,7 +69,10 @@ def submit_review(request):
                     name=form.cleaned_data['name'],
                     phone_number=form.cleaned_data['phone_number'],
                     email=form.cleaned_data['email'],
-                    review=form.cleaned_data['purpose_of_visit']
+                    department=form.cleaned_data['department'],  
+                    purpose=form.cleaned_data['purpose'], 
+                    review=form.cleaned_data['purpose_of_visit'],
+                    created_at=timezone.now()
                 )
                 return redirect('thankyou')
             else:
@@ -79,6 +82,7 @@ def submit_review(request):
         # Display phone number entry form
         form = PhoneNumberForm()
         return render(request, 'pages/phone_number.html', {'form': form})
+
 
 def simple_review(request, phone_number):
     # Fetch the existing reviews with the given phone number
@@ -92,8 +96,11 @@ def simple_review(request, phone_number):
                 new_review = form.save(commit=False)
                 new_review.phone_number = phone_number  # Keep the same phone number
                 new_review.pk = None  # Ensure a new instance is created
+                # If created_at is not set, assign the current time
+                if not new_review.created_at:
+                    new_review.created_at = timezone.now()
                 new_review.save()
-                return redirect('thankyou')  # Redirect to a success page or your desired URL
+                return redirect('thankyou')
             except IntegrityError:
                 form.add_error(None, "A review with this phone number already exists.")
     else:
@@ -113,12 +120,12 @@ def simple_review(request, phone_number):
 @login_required
 def manual_entry(request):
     if request.method == 'POST':
-        form = Manualform(request.POST)
+        form = ManualForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('thankyou')  # Redirect to a success page after saving the form
+            return redirect('thanks')  
     else:
-        form = Manualform()
+        form = ManualForm()
     
     return render(request, 'pages/manual_entry.html', {'form': form})
 
@@ -169,6 +176,8 @@ def dashboard(request):
 
 def thank_you_view(request):
     return render(request, 'pages/thankyou.html')
+def thanks(request):
+    return render(request, 'pages/thanks.html')
 @login_required
 def visitor_statistics(request):
     # Fetching query parameters

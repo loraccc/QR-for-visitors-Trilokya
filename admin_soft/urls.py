@@ -8,11 +8,11 @@ from .views import (see_qr,submit_review,simple_review,
 
 
 urlpatterns = [
-    # path('index/', views.index, name='index'),
-    path('', views.see_qr, name='qr'),    #changed
+    path('', views.see_qr, name='qr'),    
     path('pages/submit-review/', submit_review, name='submit-review'),
     path('pages/simple-review/<str:phone_number>/', simple_review, name='simple-review'),
     path('thankyou/', views.thank_you_view, name='thankyou'),  
+    path('thanks/', views.thanks, name='thanks'),  
     path('pages/dashboard/', views.dashboard, name='dashboard'),  
     path('pages/manual/', views.manual_entry, name='manual_entry'),  
 
@@ -20,6 +20,8 @@ urlpatterns = [
 
     path('pages/visitor_statistics', visitor_statistics, name='visitor_statistics'),
     path('visitor_statistics/csv/', export_visitor_statistics_csv, name='export_visitor_statistics_csv'),
+
+
     # Authentication
     path('accounts/login/', views.UserLoginView.as_view(), name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
@@ -38,11 +40,3 @@ urlpatterns = [
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
 ]
-# from django.urls import path
-# from . import views
-
-# urlpatterns = [
-#     path('', views.home, name='home'),
-   
-# ]
-

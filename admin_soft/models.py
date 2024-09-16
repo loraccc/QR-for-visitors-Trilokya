@@ -27,7 +27,7 @@ class Review(models.Model):
     purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, null=True)  # ForeignKey to Purpose model
     other_purpose = models.CharField(max_length=255, blank=True, null=True)  # Optional additional detail
     review = models.TextField(blank=True)  
-    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for review creation
+    created_at = models.DateTimeField(null=True, blank=True)  # Timestamp for review creation
 
     def __str__(self):
         return f"Review by {self.name or 'Anonymous'}"
