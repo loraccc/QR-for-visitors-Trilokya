@@ -1,3 +1,5 @@
+import calendar
+import csv
 from django.shortcuts import render, redirect,get_list_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
@@ -12,26 +14,25 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
-
+from itertools import chain
+from django.core.paginator import Paginator
 
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
+
 from .forms import (PhoneNumberForm,
-                    FullReviewForm,SimpleReviewForm, ManualForm)
+                    FullReviewForm,SimpleReviewForm ,ManualForm)
 from .models import *
 from datetime import timedelta,date,datetime
-import calendar
-import csv
 
 
 def index(request):
     if request.method == 'POST':
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
-            # Process the phone number here
             phone_number = form.cleaned_data['phone_number']
-            # For example, redirect or save the phone number
-            return HttpResponseRedirect('')  # Redirect after successful submission
+        
+            return HttpResponseRedirect('') 
     else:
         form = PhoneNumberForm()
 
@@ -69,7 +70,10 @@ def submit_review(request):
                     name=form.cleaned_data['name'],
                     phone_number=form.cleaned_data['phone_number'],
                     email=form.cleaned_data['email'],
-                    review=form.cleaned_data['purpose_of_visit']
+                    department=form.cleaned_data['department'],  
+                    purpose=form.cleaned_data['purpose'], 
+                    review=form.cleaned_data['purpose_of_visit'],
+                    created_at=timezone.now()
                 )
                 return redirect('thankyou')
             else:
@@ -79,6 +83,7 @@ def submit_review(request):
         # Display phone number entry form
         form = PhoneNumberForm()
         return render(request, 'pages/phone_number.html', {'form': form})
+
 
 def simple_review(request, phone_number):
     # Fetch the existing reviews with the given phone number
@@ -92,8 +97,11 @@ def simple_review(request, phone_number):
                 new_review = form.save(commit=False)
                 new_review.phone_number = phone_number  # Keep the same phone number
                 new_review.pk = None  # Ensure a new instance is created
+                # If created_at is not set, assign the current time
+                if not new_review.created_at:
+                    new_review.created_at = timezone.now()
                 new_review.save()
-                return redirect('thankyou')  # Redirect to a success page or your desired URL
+                return redirect('thankyou')
             except IntegrityError:
                 form.add_error(None, "A review with this phone number already exists.")
     else:
@@ -110,7 +118,17 @@ def simple_review(request, phone_number):
         })
     
     return render(request, 'pages/simple_review.html', {'form': form, 'existing_reviews': existing_reviews})
-
+@login_required
+def manual_entry(request):
+    if request.method == 'POST':
+        form = ManualForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('visitor_statistics')  
+    else:
+        form = ManualForm()
+    
+    return render(request, 'pages/manual_entry.html', {'form': form})
 
 @login_required
 def dashboard(request):
@@ -159,6 +177,8 @@ def dashboard(request):
 
 def thank_you_view(request):
     return render(request, 'pages/thankyou.html')
+def thanks(request):
+    return render(request, 'pages/thanks.html')
 @login_required
 def visitor_statistics(request):
     # Fetching query parameters
@@ -166,81 +186,85 @@ def visitor_statistics(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     page_number = request.GET.get('page_filtered', 1)
-    
-    # Filter reviews based on date range
-    reviews = Review.objects.all()
 
-    # Date filtering logic
+    # Fetch both reviews and manual reports
+    reviews = Review.objects.all()
+    manual_reports = ManualReport.objects.all()
+
+    # Apply date filtering
     if start_date:
         try:
             start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
             reviews = reviews.filter(created_at__date__gte=start_date)
+            manual_reports = manual_reports.filter(time__gte=start_date)
         except ValueError:
-            start_date = None
+            start_date = None  # Handle invalid date format
 
     if end_date:
         try:
             end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
             reviews = reviews.filter(created_at__date__lte=end_date)
+            manual_reports = manual_reports.filter(time__lte=end_date)
         except ValueError:
-            end_date = None
+            end_date = None  # Handle invalid date format
 
-    # Apply predefined filters for today, this month, this year
-    if filter_type == 'today':
-        today = date.today()
-        reviews = reviews.filter(created_at__date=today)
-    elif filter_type == 'this_month':
-        today = date.today()
-        reviews = reviews.filter(created_at__year=today.year, created_at__month=today.month)
-    elif filter_type == 'this_year':
-        today = date.today()
-        reviews = reviews.filter(created_at__year=today.year)
-
-    # Pagination
-    paginator = Paginator(reviews, 10)  # Show 10 reviews per page
-    reviews_filtered = paginator.get_page(page_number)
-
-    # Total visitors for today, all time, this month, and this year
-    total_visitors_today = Review.objects.filter(created_at__date=date.today()).count()
-    total_visitors_all_time = Review.objects.count()
-
-    # Calculate total visitors this month and this year
+    # Apply predefined filters (today, this month, this year)
     today = date.today()
-    total_visitors_this_month = Review.objects.filter(created_at__year=today.year, created_at__month=today.month).count()
-    total_visitors_this_year = Review.objects.filter(created_at__year=today.year).count()
+    if filter_type == 'today':
+        reviews = reviews.filter(created_at__date=today)
+        manual_reports = manual_reports.filter(time__date=today)
+    elif filter_type == 'this_month':
+        reviews = reviews.filter(created_at__year=today.year, created_at__month=today.month)
+        manual_reports = manual_reports.filter(time__year=today.year, time__month=today.month)
+    elif filter_type == 'this_year':
+        reviews = reviews.filter(created_at__year=today.year)
+        manual_reports = manual_reports.filter(time__year=today.year)
+
+    # Combine the results
+    combined_results = list(chain(reviews, manual_reports))
+
+    # Paginate combined results
+    paginator = Paginator(combined_results, 10)  # Show 10 entries per page
+    paginated_results = paginator.get_page(page_number)
 
     context = {
-        'reviews_filtered': reviews_filtered,
-        'total_visitors_today': total_visitors_today,
-        'total_visitors_all_time': total_visitors_all_time,
-        'total_visitors_this_month': total_visitors_this_month,
-        'total_visitors_this_year': total_visitors_this_year,
+        'paginated_results': paginated_results,
         'filter_type': filter_type,
         'start_date': start_date,
         'end_date': end_date
     }
 
     return render(request, 'pages/visitor_statistics.html', context)
-
-
 def export_visitor_statistics_csv(request):
-    # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="visitor_statistics.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Email', 'Phone Number', 'Department', 'Purpose', 'Review', 'Created At'])
+    writer.writerow(['Name', 'Email', 'Phone Number', 'Department', 'Purpose', 'Type', 'Created/Time'])
 
     reviews = Review.objects.all()
+    manual_reports = ManualReport.objects.all()
+
     for review in reviews:
         writer.writerow([
             review.name,
             review.email,
             review.phone_number,
-            review.department.name if review.department else 'N/A',  # Get department name
-            review.purpose.name if review.purpose else 'N/A',  # Get purpose name
-            review.review,
+            review.department.name if review.department else 'N/A',
+            review.purpose.name if review.purpose else 'N/A',
+            'Review',
             review.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        ])
+
+    for manual_report in manual_reports:
+        writer.writerow([
+            manual_report.name,
+            manual_report.email,
+            manual_report.phone_number,
+            manual_report.department.name if manual_report.department else 'N/A',
+            manual_report.purpose.name if manual_report.purpose else 'N/A',
+            'Manual Report',
+            manual_report.time.strftime('%Y-%m-%d %H:%M:%S'),
         ])
 
     return response
@@ -282,22 +306,3 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 class UserPasswordChangeView(PasswordChangeView):
   template_name = 'accounts/password_change.html'
   form_class = UserPasswordChangeForm
-
-
-
-# manual entry
-def manual_entry(request):
-    if request.method == 'POST':
-        form = ManualForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('visitor_statistics')
-    else:
-        form = ManualForm()
-    return render(request, 'pages/manual_entry.html', {'form': form})
-
-def visitor_statistics(request):
-    reviews_filtered = ManualReport.objects.all()  # Retrieve all saved entries
-    return render(request, 'pages/visitor_statistics.html', {'reviews_filtered': reviews_filtered})
-
-

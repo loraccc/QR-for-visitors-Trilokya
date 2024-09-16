@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from .models import Review, ManualReport
+from django.forms.widgets import DateTimeInput
 
 class RegistrationForm(UserCreationForm):
   password1 = forms.CharField(
@@ -196,6 +197,7 @@ class ManualForm(forms.ModelForm):
         fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'time']  # Correct field names
         widgets = {
             'Purpose Of Visit': forms.Textarea(attrs={'placeholder': 'Update your Purpose here...'}),
+            'time': DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         }
 
 

@@ -1,12 +1,12 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Visitor Statistics
+    Visitor Statistics
 {% endblock %}
 
 {% block content %}
     <style>
-        /* General body styling */
+        /* General styling */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #111;
@@ -19,7 +19,6 @@ Visitor Statistics
             height: 100vh;
         }
 
-        /* Container to hold everything */
         .container {
             max-width: 1200px;
             width: 100%;
@@ -29,7 +28,6 @@ Visitor Statistics
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
-        /* Styling for the page title */
         .page-title {
             font-size: 36px;
             color: #fff;
@@ -37,7 +35,6 @@ Visitor Statistics
             margin-bottom: 40px;
         }
 
-        /* Back button styling */
         .back-button {
             display: inline-block;
             margin-bottom: 20px;
@@ -53,7 +50,6 @@ Visitor Statistics
             background-color: #555;
         }
 
-        /* Stats summary box styling */
         .stats-summary {
             margin-bottom: 30px;
             text-align: center;
@@ -68,7 +64,6 @@ Visitor Statistics
             color: #2ecc71;
         }
 
-        /* Form for filtering by date range */
         .filter-form {
             margin-bottom: 30px;
             display: flex;
@@ -103,7 +98,6 @@ Visitor Statistics
             background-color: #27ae60;
         }
 
-        /* Filter buttons for predefined ranges */
         .filter-buttons form {
             text-align: center;
             margin-bottom: 30px;
@@ -125,7 +119,6 @@ Visitor Statistics
             background-color: #2ecc71;
         }
 
-        /* Table styling */
         .scroll {
             overflow-x: auto;
         }
@@ -161,7 +154,6 @@ Visitor Statistics
             font-style: italic;
         }
 
-        /* Pagination styling */
         .pagination {
             display: flex;
             justify-content: center;
@@ -189,7 +181,6 @@ Visitor Statistics
             border-radius: 5px;
         }
 
-        /* Download CSV button styling */
         .download-btn {
             display: block;
             width: 100%;
@@ -209,103 +200,101 @@ Visitor Statistics
         }
 
     </style>
-</head>
-<body>
 
-<div class="container">
-    <a href="{% url 'visitor_statistics' %}" class="back-button">Back to Home</a>
+    <div class="container">
+        <a href="{% url 'visitor_statistics' %}" class="back-button">Back to Home</a>
 
-    <h1 class="page-title">Visitor Statistics</h1>
+        <h1 class="page-title">Visitor Statistics</h1>
 
-    <div class="stats-summary">
-        <p>Total visitors today: <strong>{{ total_visitors_today }}</strong></p>
-        <p>Total visitors all time: <strong>{{ total_visitors_all_time }}</strong></p>
-    </div>
+        <div class="stats-summary">
+            <p>Total visitors today: <strong>{{ total_visitors_today }}</strong></p>
+            <p>Total visitors all time: <strong>{{ total_visitors_all_time }}</strong></p>
+        </div>
 
-    <!-- Date Range Filter Form -->
-    <div class="filter-form">
-        <form method="GET">
-            <label for="start_date">Start Date:</label>
-            <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
-    
-            <label for="end_date">End Date:</label>
-            <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
-    
-            <button type="submit" class="filter-btn">Filter by Date Range</button>
-        </form>
-    </div>
+        <!-- Date Range Filter Form -->
+        <div class="filter-form">
+            <form method="GET">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+        
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+        
+                <button type="submit" class="filter-btn">Filter by Date Range</button>
+            </form>
+        </div>
 
-    <!-- Filter buttons for predefined ranges -->
-    <div class="filter-buttons">
-        <form method="GET">
-            <button type="submit" name="filter" value="today" class="btn {% if filter_type == 'today' %}active{% endif %}">
-                Today's Visitors
-            </button>
-            <button type="submit" name="filter" value="this_month" class="btn {% if filter_type == 'this_month' %}active{% endif %}">
-                This Month's Visitors ({{ total_visitors_this_month }})
-            </button>
-            <button type="submit" name="filter" value="this_year" class="btn {% if filter_type == 'this_year' %}active{% endif %}">
-                This Year's Visitors ({{ total_visitors_this_year }})
-            </button>
-        </form>
-    </div>
-    
-
-    <h2>Filtered Visit Purposes</h2>
-    <div class="scroll">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Department</th>
-                    <th>Purpose</th>
-                    <th>Review</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for review in reviews_filtered %}
+        <!-- Filter buttons for predefined ranges -->
+        <div class="filter-buttons">
+            <form method="GET">
+                <button type="submit" name="filter" value="today" class="btn {% if filter_type == 'today' %}active{% endif %}">
+                    Today's Visitors
+                </button>
+                <button type="submit" name="filter" value="this_month" class="btn {% if filter_type == 'this_month' %}active{% endif %}">
+                    This Month's Visitors ({{ total_visitors_this_month }})
+                </button>
+                <button type="submit" name="filter" value="this_year" class="btn {% if filter_type == 'this_year' %}active{% endif %}">
+                    This Year's Visitors ({{ total_visitors_this_year }})
+                </button>
+            </form>
+        </div>
+        
+        <h2>Filtered Visit Purposes</h2>
+        <div class="scroll">
+            <table class="styled-table">
+                <thead>
                     <tr>
-                        <td>{{ review.name }}</td>
-                        <td>{{ review.email }}</td>
-                        <td>{{ review.phone_number }}</td>
-                        <td>{{ review.department.name }}</td>
-                        <td>{{ review.purpose.name }}</td>
-                        <td>{{ review.review }}</td>
-                        <td>{{ review.created_at }}</td>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Department</th>
+                        <th>Purpose</th>
+                        <th>Review</th>
+                        <th>Created At</th>
+                        <th>Time of Visit</th>
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7" class="no-data">No visitors found for the selected date range or filter.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    {% for review in paginated_results %}
+                        <tr>
+                            <td>{{ review.name }}</td>
+                            <td>{{ review.email }}</td>
+                            <td>{{ review.phone_number }}</td>
+                            <td>{{ review.department.name }}</td>
+                            <td>{{ review.purpose.name }}</td>
+                            <td>{{ review.review }}</td>
+                            <td>{{ review.created_at }}</td>
+                            <td>{{ review.time }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="no-data">No visitors found for the selected date range or filter.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <!-- Pagination for filtered reviews -->
-    <div class="pagination">
-        <span class="step-links">
-            {% if reviews_filtered.has_previous %}
-                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered=1">&laquo; first</a>
-                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.previous_page_number }}">previous</a>
-            {% endif %}
-            <span class="current">
-                Page {{ reviews_filtered.number }} of {{ reviews_filtered.paginator.num_pages }}
+        <!-- Pagination for filtered reviews -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if paginated_results.has_previous %}
+                    <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered=1">&laquo; first</a>
+                    <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ paginated_results.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="current">
+                    Page {{ paginated_results.number }} of {{ paginated_results.paginator.num_pages }}
+                </span>
+                {% if paginated_results.has_next %}
+                    <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ paginated_results.next_page_number }}">next</a>
+                    <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ paginated_results.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
             </span>
-            {% if reviews_filtered.has_next %}
-                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.next_page_number }}">next</a>
-                <a href="?filter={{ filter_type }}&start_date={{ start_date }}&end_date={{ end_date }}&page_filtered={{ reviews_filtered.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
+        </div>
+
+        <!-- Download CSV Button -->
+        <form action="{% url 'export_visitor_statistics_csv' %}" method="get">
+            <button type="submit" class="download-btn">Download CSV</button>
+        </form>
     </div>
-
-    <!-- Download CSV Button -->
-    <form action="{% url 'export_visitor_statistics_csv' %}" method="get">
-        <button type="submit" class="download-btn">Download CSV</button>
-    </form>
-
-</div>
 {% endblock %}

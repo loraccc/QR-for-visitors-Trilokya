@@ -40,7 +40,7 @@ class ManualReport(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # ForeignKey to Department model
     purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, null=True)  # ForeignKey to Purpose model
     other_purpose = models.CharField(max_length=255, blank=True, null=True)  # Optional additional detail 
-    time = models.DateTimeField(default=timezone.now)  # Allows manual input
+    time = models.DateTimeField()  # Allows manual input
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for review creation
 
     def __str__(self):
