@@ -50,40 +50,34 @@ def submit_review(request):
         phone_number = request.POST.get('phone_number', None)
 
         if not phone_number:
-            # If phone number is not provided, render the phone number form
             form = PhoneNumberForm()
             return render(request, 'pages/phone_number.html', {'form': form})
 
-        # Check if the phone number already exists
         existing_reviews = Review.objects.filter(phone_number=phone_number)
 
         if existing_reviews.exists():
-            # Redirect to the simple review form for updating/adding a new review
             return redirect('simple-review', phone_number=phone_number)
         else:
-
-            # Collect full info if no review exists
             form = FullReviewForm(request.POST)
             if form.is_valid():
-                # Save new user and review
-                Review.objects.create(
-                    name=form.cleaned_data['name'],
-                    phone_number=form.cleaned_data['phone_number'],
-                    email=form.cleaned_data['email'],
-                    department=form.cleaned_data['department'],  
-                    purpose=form.cleaned_data['purpose'], 
-                    review=form.cleaned_data['purpose_of_visit'],
-                    created_at=timezone.now()
-                )
-                return redirect('thankyou')
-            else:
-                # Render the full review formssss with errors
-                return render(request, 'pages/submit-review.html', {'form': form, 'phone_number': phone_number})
+                try:
+                    Review.objects.create(
+                        name=form.cleaned_data['name'],
+                        phone_number=form.cleaned_data['phone_number'],
+                        email=form.cleaned_data['email'],
+                        department=form.cleaned_data['department'],
+                        purpose=form.cleaned_data['purpose'],
+                        review=form.cleaned_data['purpose_of_visit'],
+                        time=timezone.now(),  # Set the time field
+                        created_at=timezone.now()  # Auto-set current time
+                    )
+                    return redirect('thankyou')
+                except Exception as e:
+                    form.add_error(None, f"Error saving review: {str(e)}")
+            return render(request, 'pages/submit-review.html', {'form': form, 'phone_number': phone_number})
     else:
-        # Display phone number entry form
         form = PhoneNumberForm()
         return render(request, 'pages/phone_number.html', {'form': form})
-
 
 def simple_review(request, phone_number):
     # Fetch the existing reviews with the given phone number
@@ -91,19 +85,28 @@ def simple_review(request, phone_number):
     
     if request.method == 'POST':
         form = SimpleReviewForm(request.POST)
+        
         if form.is_valid():
             try:
                 # Create a new review instance with the same phone number
                 new_review = form.save(commit=False)
                 new_review.phone_number = phone_number  # Keep the same phone number
                 new_review.pk = None  # Ensure a new instance is created
-                # If created_at is not set, assign the current time
-                if not new_review.created_at:
-                    new_review.created_at = timezone.now()
+                new_review.created_at = timezone.now()  # Set created_at field
+
+                # Save the new review
                 new_review.save()
+                
                 return redirect('thankyou')
-            except IntegrityError:
-                form.add_error(None, "A review with this phone number already exists.")
+
+            # Catch and log specific integrity errors for debugging
+            except IntegrityError as e:
+                form.add_error(None, f"IntegrityError: {str(e)}")
+            except Exception as e:
+                form.add_error(None, f"An error occurred while saving the review: {str(e)}")
+        else:
+            print(form.errors)  # Log form validation errors to help debug
+
     else:
         # Initialize the form with existing review data (use data from the first review)
         first_review = existing_reviews[0]
@@ -118,12 +121,22 @@ def simple_review(request, phone_number):
         })
     
     return render(request, 'pages/simple_review.html', {'form': form, 'existing_reviews': existing_reviews})
+
+
 @login_required
 def manual_entry(request):
     if request.method == 'POST':
         form = ManualForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Create the Review object from the form but do not commit yet
+            manual_entry = form.save(commit=False)
+            
+            # Set the created_at field to the value of the time field
+            manual_entry.created_at = manual_entry.time
+            
+            # Now save the entry
+            manual_entry.save()
+            
             return redirect('visitor_statistics')  
     else:
         form = ManualForm()
@@ -181,50 +194,43 @@ def thanks(request):
     return render(request, 'pages/thanks.html')
 @login_required
 def visitor_statistics(request):
-    # Fetching query parameters
+    # Fetch query parameters
     filter_type = request.GET.get('filter', 'all')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     page_number = request.GET.get('page_filtered', 1)
 
-    # Fetch both reviews and manual reports
+    # Fetch reviews
     reviews = Review.objects.all()
-    manual_reports = ManualReport.objects.all()
 
     # Apply date filtering
     if start_date:
         try:
             start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
             reviews = reviews.filter(created_at__date__gte=start_date)
-            manual_reports = manual_reports.filter(time__gte=start_date)
         except ValueError:
-            start_date = None  # Handle invalid date format
+            # Handle invalid date formats
+            start_date = None
 
     if end_date:
         try:
             end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
             reviews = reviews.filter(created_at__date__lte=end_date)
-            manual_reports = manual_reports.filter(time__lte=end_date)
         except ValueError:
-            end_date = None  # Handle invalid date format
+            # Handle invalid date formats
+            end_date = None
 
     # Apply predefined filters (today, this month, this year)
     today = date.today()
     if filter_type == 'today':
         reviews = reviews.filter(created_at__date=today)
-        manual_reports = manual_reports.filter(time__date=today)
     elif filter_type == 'this_month':
         reviews = reviews.filter(created_at__year=today.year, created_at__month=today.month)
-        manual_reports = manual_reports.filter(time__year=today.year, time__month=today.month)
     elif filter_type == 'this_year':
         reviews = reviews.filter(created_at__year=today.year)
-        manual_reports = manual_reports.filter(time__year=today.year)
-
-    # Combine the results
-    combined_results = list(chain(reviews, manual_reports))
 
     # Paginate combined results
-    paginator = Paginator(combined_results, 10)  # Show 10 entries per page
+    paginator = Paginator(reviews, 10)  # Show 10 entries per page
     paginated_results = paginator.get_page(page_number)
 
     context = {
@@ -235,6 +241,8 @@ def visitor_statistics(request):
     }
 
     return render(request, 'pages/visitor_statistics.html', context)
+
+
 def export_visitor_statistics_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="visitor_statistics.csv"'
@@ -243,7 +251,6 @@ def export_visitor_statistics_csv(request):
     writer.writerow(['Name', 'Email', 'Phone Number', 'Department', 'Purpose', 'Type', 'Created/Time'])
 
     reviews = Review.objects.all()
-    manual_reports = ManualReport.objects.all()
 
     for review in reviews:
         writer.writerow([
@@ -254,17 +261,6 @@ def export_visitor_statistics_csv(request):
             review.purpose.name if review.purpose else 'N/A',
             'Review',
             review.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-        ])
-
-    for manual_report in manual_reports:
-        writer.writerow([
-            manual_report.name,
-            manual_report.email,
-            manual_report.phone_number,
-            manual_report.department.name if manual_report.department else 'N/A',
-            manual_report.purpose.name if manual_report.purpose else 'N/A',
-            'Manual Report',
-            manual_report.time.strftime('%Y-%m-%d %H:%M:%S'),
         ])
 
     return response

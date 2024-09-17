@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UsernameField, PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-from .models import Review, ManualReport
+from .models import Review
 from django.forms.widgets import DateTimeInput
 
 class RegistrationForm(UserCreationForm):
@@ -67,27 +67,6 @@ class UserPasswordChangeForm(PasswordChangeForm):
         'class': 'form-control', 'placeholder': 'Confirm New Password'
     }), label="Confirm New Password")
 
-
-
-# class CustomUserCreationForm(UserCreationForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['username', 'email', 'password1', 'password2']
-#     def clean_phone_number(self):
-#         phone_number = self.cleaned_data.get('phone_number')
-#         if CustomUser.objects.filter(phone_number=phone_number).exists():
-#             raise forms.ValidationError("This phone number is already in use.")
-#         return phone_number
-    
-# class CustomAuthenticationForm(AuthenticationForm):
-#     username = forms.CharField(
-#         max_length=254,
-#         widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': 'Username'})
-#     )
-#     password = forms.CharField(
-#         strip=False,
-#         widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
-#     )
 
 def validate_phone_number_length(value):
     """
@@ -193,7 +172,7 @@ class SimpleReviewForm(forms.ModelForm):
 
 class ManualForm(forms.ModelForm):
     class Meta:
-        model = ManualReport
+        model = Review
         fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'time']  # Correct field names
         widgets = {
             'Purpose Of Visit': forms.Textarea(attrs={'placeholder': 'Update your Purpose here...'}),

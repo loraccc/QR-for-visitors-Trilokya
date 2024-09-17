@@ -251,7 +251,7 @@
                         <th>Purpose</th>
                         <th>Review</th>
                         <th>Created At</th>
-                        <th>Time of Visit</th>
+                        {% comment %} <th>Time of Visit</th> {% endcomment %}
                     </tr>
                 </thead>
                 <tbody>
@@ -264,7 +264,7 @@
                             <td>{{ review.purpose.name }}</td>
                             <td>{{ review.review }}</td>
                             <td>{{ review.created_at }}</td>
-                            <td>{{ review.time }}</td>
+                            {% comment %} <td>{{ review.time }}</td> {% endcomment %}
                         </tr>
                     {% empty %}
                         <tr>
