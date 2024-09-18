@@ -69,6 +69,7 @@ def submit_review(request):
                     name=form.cleaned_data['name'],
                     phone_number=form.cleaned_data['phone_number'],
                     email=form.cleaned_data['email'],
+                    organization_name=form.cleaned_data.get('organization_name'),  # New organization name field
                     department=form.cleaned_data['department'],  
                     purpose=form.cleaned_data['purpose'], 
                     review=form.cleaned_data['purpose_of_visit'],
@@ -110,10 +111,12 @@ def simple_review(request, phone_number):
             'name': first_review.name,
             'phone_number': first_review.phone_number,
             'email': first_review.email,
+            'organization_name': first_review.organization_name,  # Include organization name
             'department': first_review.department,
             'purpose': first_review.purpose,
             'other_purpose': first_review.other_purpose,
             'review': first_review.review,
+
         })
     
     return render(request, 'pages/simple_review.html', {'form': form, 'existing_reviews': existing_reviews})

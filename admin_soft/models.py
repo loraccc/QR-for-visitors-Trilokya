@@ -23,6 +23,7 @@ class Review(models.Model):
     name = models.CharField(max_length=100)  # Required
     email = models.EmailField(blank=True, null=True)  # Optional 
     phone_number = models.IntegerField()  # Required and unique
+    organization_name = models.CharField(max_length=255, blank=True, null=True)  # New organization name field
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # ForeignKey to Department model
     purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, null=True)  # ForeignKey to Purpose model
     other_purpose = models.CharField(max_length=255, blank=True, null=True)  # Optional additional detail

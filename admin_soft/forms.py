@@ -8,6 +8,9 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Review
 
+
+
+
 class RegistrationForm(UserCreationForm):
   password1 = forms.CharField(
       label=_("Password"),
@@ -106,7 +109,7 @@ class FullReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit']
+        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit','organization_name']
         widgets = {
             'purpose_of_visit': forms.Textarea(attrs={'placeholder': 'Enter the purpose of your visit here...'}),
         }
@@ -116,7 +119,7 @@ class FullReviewForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
         self.fields['phone_number'].widget.attrs.update({'readonly': 'readonly'})
-        self.order_fields(['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit'])
+        self.order_fields(['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit','organization_name'])
 
         # Hide 'other_purpose' field if purpose is not 'Other' (handled by JS in templates)
         if self.instance and self.instance.purpose and self.instance.purpose != 'Other':
@@ -141,7 +144,7 @@ class SimpleReviewForm(forms.ModelForm):
     """
     class Meta:
         model = Review
-        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'review']
+        fields = ['name', 'phone_number', 'email','organization_name', 'department', 'purpose', 'other_purpose', 'review',]
         widgets = {
             'review': forms.Textarea(attrs={'placeholder': 'Update your review here...'}),
         }
@@ -155,7 +158,7 @@ class SimpleReviewForm(forms.ModelForm):
             self.fields['email'].widget.attrs['readonly'] = 'readonly'
     class Meta:
         model = Review
-        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'review']
+        fields = ['name', 'phone_number', 'email','organization_name', 'department', 'purpose', 'other_purpose', 'review']
         widgets = {
             'Purpose Of Visit': forms.Textarea(attrs={'placeholder': 'Update your Purpose here...'}),
         }
@@ -172,7 +175,7 @@ class ManualForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['name', 'email', 'phone_number', 'department', 'purpose', 'other_purpose', 'review', 'created_at']
+        fields = ['name', 'email', 'phone_number','organization_name', 'department', 'purpose', 'other_purpose', 'review', 'created_at']
         labels = {
             'review': 'Purpose',  # Changed the label for the review field into "Purpose"
         }
