@@ -66,6 +66,7 @@ def submit_review(request):
                         phone_number=form.cleaned_data['phone_number'],
                         email=form.cleaned_data['email'],
                         department=form.cleaned_data['department'],
+                        organization=form.cleaned_data['organization'],
                         purpose=form.cleaned_data['purpose'],
                         review=form.cleaned_data['purpose_of_visit'],
                         time=timezone.now(),  # Set the time field
@@ -115,6 +116,7 @@ def simple_review(request, phone_number):
             'phone_number': first_review.phone_number,
             'email': first_review.email,
             'department': first_review.department,
+            'organization': first_review.organization,
             'purpose': first_review.purpose,
             'other_purpose': first_review.other_purpose,
             'review': first_review.review,
