@@ -334,13 +334,14 @@ Visitor Statistics
                 let name = this.querySelector('td:nth-child(1)').textContent;
                 let email = this.querySelector('td:nth-child(2)').textContent;
                 let phone = this.querySelector('td:nth-child(3)').textContent;
-                let department = this.querySelector('td:nth-child(4)').textContent;
-                let purpose = this.querySelector('td:nth-child(5)').textContent;
-                let review = this.querySelector('td:nth-child(6)').textContent;
-                let createdAt = this.querySelector('td:nth-child(7)').textContent;
+                let organization_name = this.querySelector('td:nth-child(4)').textContent;
+                let department = this.querySelector('td:nth-child(5)').textContent;
+                let purpose = this.querySelector('td:nth-child(6)').textContent;
+                let review = this.querySelector('td:nth-child(7)').textContent;
+                let createdAt = this.querySelector('td:nth-child(8)').textContent;
     
                 // Display data in an alert
-                alert(`Details:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nDepartment: ${department}\nPurpose: ${purpose}\nReview: ${review}\nCreated At: ${createdAt}`);
+                alert(`Details:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nOrganization: ${organization_name} \nDepartment: ${department}\nPurpose: ${purpose}\nPurpose for Visit: ${review}\nCreated At: ${createdAt}`);
             });
         });
     </script>
