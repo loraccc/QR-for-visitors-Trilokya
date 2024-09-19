@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from .models import Review
+from .models import Review,Purpose,Department
 
 
 
@@ -109,7 +109,7 @@ class FullReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit','organization_name']
+        fields = ['name', 'phone_number', 'email','organization_name','department', 'purpose', 'other_purpose', 'purpose_of_visit']
         widgets = {
             'purpose_of_visit': forms.Textarea(attrs={'placeholder': 'Enter the purpose of your visit here...'}),
         }
@@ -119,7 +119,7 @@ class FullReviewForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
         self.fields['phone_number'].widget.attrs.update({'readonly': 'readonly'})
-        self.order_fields(['name', 'phone_number', 'email', 'department', 'purpose', 'other_purpose', 'purpose_of_visit','organization_name'])
+        self.order_fields(['name', 'phone_number', 'email','organization_name', 'department', 'purpose', 'other_purpose', 'purpose_of_visit',])
 
         # Hide 'other_purpose' field if purpose is not 'Other' (handled by JS in templates)
         if self.instance and self.instance.purpose and self.instance.purpose != 'Other':
@@ -192,3 +192,20 @@ class ManualForm(forms.ModelForm):
         if len(str(phone_number)) != 10:  # Ensure it has exactly 10 digits
             raise forms.ValidationError('Phone number must be exactly 10 digits.')
         return phone_number
+    
+
+class PurposeForm(forms.ModelForm):
+    class Meta:
+        model = Purpose
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter purpose name'}),
+        }
+class DepartmentForm(forms.ModelForm):
+
+    class Meta:
+        model = Purpose
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter purpose name'}),
+        }

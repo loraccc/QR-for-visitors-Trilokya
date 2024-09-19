@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Add Purpose{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Add Purpose</h2>
+
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'add_purpose' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Purpose Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter purpose name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <h2 class="mt-5">List of Purposes</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>Purpose Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purpose in purposes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ purpose.name }}</td>
+                <td>
+                    <a href="{% url 'edit_purpose' purpose.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <!-- Delete form for specific purpose with confirmation -->
+                    <form method="POST" action="{% url 'delete_purpose' purpose.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this purpose?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

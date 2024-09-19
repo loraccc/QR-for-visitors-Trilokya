@@ -4,7 +4,8 @@ from django.contrib.auth import views as auth_views
 
 from .views import (see_qr,submit_review,simple_review,
                     visitor_statistics,export_visitor_statistics_csv,
-                    thank_you_view,dashboard,manual_entry)
+                    thank_you_view,dashboard,manual_entry
+                    )
 
 
 urlpatterns = [
@@ -39,4 +40,14 @@ urlpatterns = [
     path('accounts/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
+
+
+
+    path('pages/add_department/', views.add_department, name='add_department'),
+    path('pages/edit_department/<int:id>/', views.edit_department, name='edit_department'),
+    path('pages/delete_department/<int:id>/', views.delete_department, name='delete_department'),
+
+    path('pages/add_purpose/', views.add_purpose, name='add_purpose'),
+    path('pages/edit_purpose/<int:id>/', views.edit_purpose, name='edit_purpose'),
+    path('pages/delete_purpose/<int:id>/', views.delete_purpose, name='delete_purpose'),
 ]

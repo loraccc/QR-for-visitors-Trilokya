@@ -4,6 +4,7 @@ import csv
 from django.shortcuts import render, redirect,get_list_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
+from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
@@ -15,12 +16,14 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
-
+from django.views import generic
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 
 from .forms import (PhoneNumberForm,
-                    FullReviewForm,SimpleReviewForm ,ManualForm)
+                    FullReviewForm,SimpleReviewForm ,ManualForm,
+                    PurposeForm, DepartmentForm,
+                    )
 from .models import *
 from datetime import timedelta,date,datetime
 
@@ -304,3 +307,71 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 class UserPasswordChangeView(PasswordChangeView):
   template_name = 'accounts/password_change.html'
   form_class = UserPasswordChangeForm
+
+
+@login_required
+def add_department (request):
+    if request.method == 'POST':
+        department_name = request.POST.get('name')
+        if department_name:
+            Department.objects.create(name=department_name)
+            return redirect('add_department')
+    departments = Department.objects.all()
+    return render(request, 'pages/add_department.html', { 'departments': departments })
+
+def edit_department(request, id):
+    department = get_object_or_404(Department, id=id)
+
+    if request.method == 'POST':
+        department_name = request.POST.get('name')
+        if department_name:
+            department.name = department_name
+            department.save()
+        return redirect('add_department')  # Redirect back to the department list after saving
+
+    return render(request, 'pages/edit_department.html', {'department': department})
+
+def delete_department(request, id):
+    department = get_object_or_404(Department, id=id)
+    if request.method == 'POST':  # Handle form submission for delete
+        department.delete()
+        return redirect('add_department')
+    
+    # After deleting, ensure we always render the updated list
+    departments = Department.objects.all()
+    return render(request, 'pages/add_department.html', {'departments': departments})
+
+@login_required
+def add_purpose(request):
+    if request.method == 'POST':
+        purpose_name = request.POST.get('name')
+        if purpose_name:
+            Purpose.objects.create(name=purpose_name)  # Use Purpose, not Department
+            return redirect('add_purpose')
+    
+    purposes = Purpose.objects.all()  # Retrieve all purposes
+    return render(request, 'pages/add_purpose.html', { 'purposes': purposes })  # Correct template
+
+@login_required
+def edit_purpose(request, id):
+    purpose = get_object_or_404(Purpose, id=id)  # Fetch the specific Purpose object
+
+    if request.method == 'POST':
+        purpose_name = request.POST.get('name')
+        if purpose_name:
+            purpose.name = purpose_name
+            purpose.save()
+        return redirect('add_purpose')  # Redirect back to the list of purposes
+
+    return render(request, 'pages/edit_purpose.html', {'purpose': purpose})
+
+@login_required
+def delete_purpose(request, id):
+    purpose = get_object_or_404(Purpose, id=id)
+    if request.method == 'POST':  # Handle form submission for delete
+        purpose.delete()
+        return redirect('add_purpose')
+    
+    # After deleting, ensure we always render the updated list
+    purposes = Purpose.objects.all()
+    return render(request, 'pages/add_purpose.html', {'purposes': purposes})
