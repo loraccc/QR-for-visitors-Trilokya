@@ -1,6 +1,6 @@
 import calendar
 import csv
-from django.shortcuts import render, redirect,get_list_or_404
+from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from django.contrib.auth import logout
@@ -16,6 +16,7 @@ from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from itertools import chain
 from django.core.paginator import Paginator
+from .models import Department
 
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
@@ -144,6 +145,40 @@ def manual_entry(request):
         form = ManualForm()
     
     return render(request, 'pages/manual_entry.html', {'form': form})
+@login_required
+def add_department (request):
+    if request.method == 'POST':
+        department_name = request.POST.get('name')
+        if department_name:
+            Department.objects.create(name=department_name)
+            return redirect('add_department')
+    departments = Department.objects.all()
+    return render(request, 'pages/add_department.html', { 'departments': departments })
+
+def edit_department(request, id):
+    department = get_object_or_404(Department, id=id)
+
+    if request.method == 'POST':
+        department_name = request.POST.get('name')
+        if department_name:
+            department.name = department_name
+            department.save()
+        return redirect('add_department')  # Redirect back to the department list after saving
+
+    return render(request, 'pages/edit_department.html', {'department': department})
+
+def delete_department(request, id):
+    department = get_object_or_404(Department, id=id)
+    if request.method == 'POST':  # Handle form submission for delete
+        department.delete()
+        return redirect('add_department')
+    
+    # After deleting, ensure we always render the updated list
+    departments = Department.objects.all()
+    return render(request, 'pages/add_department.html', {'departments': departments})
+@login_required
+def purpose (request):
+    return render(request, 'pages/purpose.html')
 
 @login_required
 def dashboard(request):

@@ -2,7 +2,7 @@ from django.urls import path
 from admin_soft import views
 from django.contrib.auth import views as auth_views
 
-from .views import see_qr,submit_review,simple_review,visitor_statistics,export_visitor_statistics_csv,thank_you_view,dashboard
+from .views import see_qr,submit_review,simple_review,visitor_statistics,export_visitor_statistics_csv,thank_you_view,dashboard, add_department
 
 
 urlpatterns = [
@@ -13,8 +13,14 @@ urlpatterns = [
     path('thankyou/', views.thank_you_view, name='thankyou'),  
     path('pages/dashboard/', views.dashboard, name='dashboard'),  
 
-    path('pages/manual_entry', views.manual_entry, name='manual'), 
+    path('pages/add_department/', views.add_department, name='add_department'),
+    path('pages/edit_department/<int:id>/', views.edit_department, name='edit_department'),
+    path('pages/delete_department/<int:id>/', views.delete_department, name='delete_department'),
 
+
+    path('pages/purpose', views.purpose, name='purpose'), 
+
+    path('manual/', views.manual_entry, name='manual'),
     path('pages/visitor_statistics', visitor_statistics, name='visitor_statistics'),
     path('visitor_statistics/csv/', export_visitor_statistics_csv, name='export_visitor_statistics_csv'),
 
