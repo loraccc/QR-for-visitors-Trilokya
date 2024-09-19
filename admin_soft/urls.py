@@ -2,7 +2,7 @@ from django.urls import path
 from admin_soft import views
 from django.contrib.auth import views as auth_views
 
-from .views import see_qr,submit_review,simple_review,visitor_statistics,export_visitor_statistics_csv,thank_you_view,dashboard, add_department
+from .views import see_qr,submit_review,simple_review,visitor_statistics,export_visitor_statistics_csv,thank_you_view,dashboard, add_department,edit_department, add_purpose, edit_purpose
 
 
 urlpatterns = [
@@ -17,9 +17,10 @@ urlpatterns = [
     path('pages/edit_department/<int:id>/', views.edit_department, name='edit_department'),
     path('pages/delete_department/<int:id>/', views.delete_department, name='delete_department'),
 
-
-    path('pages/purpose', views.purpose, name='purpose'), 
-
+    path('pages/add_purpose/', views.add_purpose, name='add_purpose'),
+    path('pages/edit_purpose/<int:id>/', views.edit_purpose, name='edit_purpose'),
+    path('pages/delete_purpose/<int:id>/', views.delete_purpose, name='delete_purpose'),
+    
     path('manual/', views.manual_entry, name='manual'),
     path('pages/visitor_statistics', visitor_statistics, name='visitor_statistics'),
     path('visitor_statistics/csv/', export_visitor_statistics_csv, name='export_visitor_statistics_csv'),

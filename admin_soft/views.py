@@ -176,9 +176,41 @@ def delete_department(request, id):
     # After deleting, ensure we always render the updated list
     departments = Department.objects.all()
     return render(request, 'pages/add_department.html', {'departments': departments})
+
 @login_required
-def purpose (request):
-    return render(request, 'pages/purpose.html')
+def add_purpose(request):
+    if request.method == 'POST':
+        purpose_name = request.POST.get('name')
+        if purpose_name:
+            Purpose.objects.create(name=purpose_name)  # Use Purpose, not Department
+            return redirect('add_purpose')
+    
+    purposes = Purpose.objects.all()  # Retrieve all purposes
+    return render(request, 'pages/add_purpose.html', { 'purposes': purposes })  # Correct template
+
+@login_required
+def edit_purpose(request, id):
+    purpose = get_object_or_404(Purpose, id=id)  # Fetch the specific Purpose object
+
+    if request.method == 'POST':
+        purpose_name = request.POST.get('name')
+        if purpose_name:
+            purpose.name = purpose_name
+            purpose.save()
+        return redirect('add_purpose')  # Redirect back to the list of purposes
+
+    return render(request, 'pages/edit_purpose.html', {'purpose': purpose})
+
+@login_required
+def delete_purpose(request, id):
+    purpose = get_object_or_404(Purpose, id=id)
+    if request.method == 'POST':  # Handle form submission for delete
+        purpose.delete()
+        return redirect('add_purpose')
+    
+    # After deleting, ensure we always render the updated list
+    purposes = Purpose.objects.all()
+    return render(request, 'pages/add_purpose.html', {'purposes': purposes})
 
 @login_required
 def dashboard(request):
