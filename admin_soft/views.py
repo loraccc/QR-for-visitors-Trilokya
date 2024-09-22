@@ -3,7 +3,7 @@ import csv
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from django.utils import timezone
@@ -17,6 +17,8 @@ from django.db.models.functions import ExtractMonth
 from itertools import chain
 from django.core.paginator import Paginator
 from .models import Department
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
@@ -154,7 +156,7 @@ def add_department (request):
             return redirect('add_department')
     departments = Department.objects.all()
     return render(request, 'pages/add_department.html', { 'departments': departments })
-
+@login_required
 def edit_department(request, id):
     department = get_object_or_404(Department, id=id)
 
@@ -166,7 +168,7 @@ def edit_department(request, id):
         return redirect('add_department')  # Redirect back to the department list after saving
 
     return render(request, 'pages/edit_department.html', {'department': department})
-
+@login_required
 def delete_department(request, id):
     department = get_object_or_404(Department, id=id)
     if request.method == 'POST':  # Handle form submission for delete
@@ -211,6 +213,33 @@ def delete_purpose(request, id):
     # After deleting, ensure we always render the updated list
     purposes = Purpose.objects.all()
     return render(request, 'pages/add_purpose.html', {'purposes': purposes})
+@login_required
+def add_user(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if username and password:
+            try:
+                user = User.objects.create_user(username=username, password=password)
+                messages.success(request, 'User created successfully.')
+                return redirect('add_user')  # Redirect to avoid form resubmission
+            except IntegrityError:
+                messages.error(request, 'User with this username already exists.')
+            except Exception as e:
+                messages.error(request, f'Error creating user: {str(e)}')
+        else:
+            messages.error(request, 'Username and password are required.')
+
+    users = User.objects.all()  # Fetch the list of users to display
+    return render(request, 'pages/add_user.html', {'users': users})
+
+@login_required
+def delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    messages.success(request, 'User deleted successfully.')
+    return redirect('add_user')  # Redirect to the page where users are listed
 
 @login_required
 def dashboard(request):
@@ -341,20 +370,20 @@ class UserLoginView(LoginView):
   def get_success_url(self):
         return reverse_lazy('dashboard') 
 
-def register(request):
-  if request.method == 'POST':
-    form = RegistrationForm(request.POST)
-    if form.is_valid():
-      form.save()
-      print('Account created successfully!')
-      return redirect('/accounts/login/')
-    else:
-      print("Register failed!")
-  else:
-    form = RegistrationForm()
+# def register(request):
+#   if request.method == 'POST':
+#     form = RegistrationForm(request.POST)
+#     if form.is_valid():
+#       form.save()
+#       print('Account created successfully!')
+#       return redirect('/accounts/login/')
+#     else:
+#       print("Register failed!")
+#   else:
+#     form = RegistrationForm()
 
-  context = { 'form': form }
-  return render(request, 'accounts/register.html', context)
+#   context = { 'form': form }
+#   return render(request, 'accounts/register.html', context)
 
 def logout_view(request):
   logout(request)

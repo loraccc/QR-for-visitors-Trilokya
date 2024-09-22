@@ -24,11 +24,14 @@ urlpatterns = [
     path('manual/', views.manual_entry, name='manual'),
     path('pages/visitor_statistics', visitor_statistics, name='visitor_statistics'),
     path('visitor_statistics/csv/', export_visitor_statistics_csv, name='export_visitor_statistics_csv'),
+    
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path ('add_user', views.add_user, name='add_user'),
 
     # Authentication
     path('accounts/login/', views.UserLoginView.as_view(), name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
-    path('accounts/register/', views.register, name='register'),
+    # path('accounts/register/', views.register, name='register'),
     path('accounts/password-change/', views.UserPasswordChangeView.as_view(), name='password_change'),
     path('accounts/password-change-done/', auth_views.PasswordChangeDoneView.as_view(
         template_name='accounts/password_change_done.html'
