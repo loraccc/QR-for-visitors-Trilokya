@@ -7173,7 +7173,7 @@ textarea.form-control-lg {
 }
 
 .link-dark {
-  color: #344767 !important;
+  color: #060608 !important;
 }
 .link-dark:hover, .link-dark:focus {
   color: #2a3952 !important;
@@ -7845,7 +7845,7 @@ textarea.form-control-lg {
 }
 
 .border-dark {
-  border-color: #344767 !important;
+  border-color: #344767 ;
 }
 
 .border-white {
@@ -9654,7 +9654,7 @@ textarea.form-control-lg {
 }
 
 .text-dark {
-  color: #344767 !important;
+  color: #060608 !important;
 }
 
 .text-white {

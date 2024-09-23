@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Add Admin User{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Add Admin User</h2>
+    <!-- Display error or success messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <!-- Admin user form -->
+    <form method="POST" action="{% url 'add_user' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">User Name</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter user name" required>
+    
+            <label for="password" class="form-label mt-3">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+    <h2 class="mt-5">List of Users</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>User Name</th>
+                <th>Password (Hashed)</th> <!-- Added password column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td> <!-- Display hashed password -->
+                <td>
+                    <form method="POST" action="{% url 'delete_user' user.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

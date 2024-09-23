@@ -4,7 +4,8 @@ from django.contrib.auth import views as auth_views
 
 from .views import (see_qr,submit_review,simple_review,
                     visitor_statistics,export_visitor_statistics_csv,
-                    thank_you_view,dashboard,manual_entry
+                    thank_you_view,dashboard,manual_entry,add_department,add_purpose,
+                    delete_purpose,delete_department
                     )
 
 
@@ -26,7 +27,7 @@ urlpatterns = [
     # Authentication
     path('accounts/login/', views.UserLoginView.as_view(), name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
-    path('accounts/register/', views.register, name='register'),
+    # path('accounts/register/', views.register, name='register'),
     path('accounts/password-change/', views.UserPasswordChangeView.as_view(), name='password_change'),
     path('accounts/password-change-done/', auth_views.PasswordChangeDoneView.as_view(
         template_name='accounts/password_change_done.html'
@@ -40,6 +41,10 @@ urlpatterns = [
     path('accounts/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
+
+
+        path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path ('add_user', views.add_user, name='add_user'),
 
 
 

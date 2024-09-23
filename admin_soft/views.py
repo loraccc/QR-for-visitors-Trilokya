@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect,get_list_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
-from django.contrib.auth import logout
+from django.contrib.auth import logout,authenticate,login
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from django.utils import timezone
@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from django.views import generic
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 
@@ -86,7 +88,6 @@ def submit_review(request):
         # Display phone number entry form
         form = PhoneNumberForm()
         return render(request, 'pages/phone_number.html', {'form': form})
-
 
 def simple_review(request, phone_number):
     # Fetch the existing reviews with the given phone number
@@ -248,6 +249,8 @@ def visitor_statistics(request):
     return render(request, 'pages/visitor_statistics.html', context)
 
 
+
+@login_required
 def export_visitor_statistics_csv(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
@@ -276,21 +279,49 @@ class UserLoginView(LoginView):
   form_class = LoginForm
   def get_success_url(self):
         return reverse_lazy('dashboard') 
+  
 
-def register(request):
-  if request.method == 'POST':
-    form = RegistrationForm(request.POST)
-    if form.is_valid():
-      form.save()
-      print('Account created successfully!')
-      return redirect('/accounts/login/')
-    else:
-      print("Register failed!")
-  else:
-    form = RegistrationForm()
+@login_required
+def add_user(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username and password:
+            try:
+                user = User.objects.create_user(username=username, password=password)
+                messages.success(request, 'User created successfully.')
+                return redirect('add_user')  # Redirect to avoid form resubmission
+            except IntegrityError:
+                messages.error(request, 'User with this username already exists.')
+            except Exception as e:
+                messages.error(request, f'Error creating user: {str(e)}')
+        else:
+            messages.error(request, 'Username and password are required.')
+    users = User.objects.all()  # Fetch the list of users to display
+    return render(request, 'pages/add_user.html', {'users': users})
 
-  context = { 'form': form }
-  return render(request, 'accounts/register.html', context)
+@login_required
+def delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    messages.success(request, 'User deleted successfully.')
+    return redirect('add_user')  # Redirect to the page where users are listed
+
+
+# def register(request):
+#   if request.method == 'POST':
+#     form = RegistrationForm(request.POST)
+#     if form.is_valid():
+#       form.save()
+#       print('Account created successfully!')
+#       return redirect('/accounts/login/')
+#     else:
+#       print("Register failed!")
+#   else:
+#     form = RegistrationForm()
+
+#   context = { 'form': form }
+#   return render(request, 'accounts/register.html', context)
 
 def logout_view(request):
   logout(request)
@@ -319,6 +350,7 @@ def add_department (request):
     departments = Department.objects.all()
     return render(request, 'pages/add_department.html', { 'departments': departments })
 
+@login_required
 def edit_department(request, id):
     department = get_object_or_404(Department, id=id)
 
@@ -331,6 +363,8 @@ def edit_department(request, id):
 
     return render(request, 'pages/edit_department.html', {'department': department})
 
+
+@login_required
 def delete_department(request, id):
     department = get_object_or_404(Department, id=id)
     if request.method == 'POST':  # Handle form submission for delete
