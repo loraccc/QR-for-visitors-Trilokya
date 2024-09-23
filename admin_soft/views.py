@@ -222,7 +222,7 @@ def add_user(request):
         if username and password:
             try:
                 user = User.objects.create_user(username=username, password=password)
-                messages.success(request, 'User created successfully.')
+                messages.success(request, 'User created successfully.') 
                 return redirect('add_user')  # Redirect to avoid form resubmission
             except IntegrityError:
                 messages.error(request, 'User with this username already exists.')

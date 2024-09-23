@@ -309,7 +309,9 @@
             <span class="nav-link-text ms-1">{% trans 'Department' %}</span>
           </a>
         </li>
+        {% endif %}
 
+        {% if request.user.is_authenticated and request.user.is_superuser %}
         <li class="nav-item">
           <a
             href="{% url 'add_user' %}"
@@ -342,8 +344,9 @@
             <span class="nav-link-text ms-1">{% trans 'Manage Admin User' %}</span>
           </a>
         </li>
+        {% endif %}
 
-      {% endif %}
+      
     </ul>
   </div>
   <div class="sidenav-footer mx-3" style="pointer-events: none; opacity: 0.6">
