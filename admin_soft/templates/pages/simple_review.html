@@ -1,7 +1,7 @@
 {% extends 'layouts/qr-base.html' %}
 {% block content %}
 <div class="container-fluid py-4">
-    <main class="d-flex justify-content-center align-items-center" ">
+    <main class="d-flex justify-content-center align-items-center">
         <div class="card p-4 shadow bg-dark text-light" style="max-width: 450px; width: 100%; border-radius: 10px;">
             <div class="text-center text-light mb-4 form-heading" style="color:#FFD700 !important">Visiting Again? Welcome back!</div>
             <form method="post" id="visitor-form">
@@ -66,7 +66,7 @@
         border-radius: 8px;
     }
     .form-control {
-        background-color: #2a2a2a;
+        background-color: #111419 !important; /* Overriding background color */
         border: 1px solid #FFD700;
         font-size: 12px;
     }
@@ -92,6 +92,7 @@
     .card {
         box-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
         border: 1px solid #FFD700;
+        background-color: #111419 !important; /* Form background color forced with !important */
     }
     label {
         color: #FFD700;
@@ -102,37 +103,36 @@
         border: 1px solid #FFD700;
     }
     select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #060608 !important;
-    color: #e9ecef !important;
-    background-color: #2a2a2a;
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #111419 !important;
+        color: #e9ecef !important;
         border: 1px solid #FFD700;
         font-size: 12px;
-}
+    }
 
-select:focus {
-    border-color: #FFD700 !important;
-    outline: none !important;
-}
+    select:focus {
+        border-color: #FFD700 !important;
+        outline: none !important;
+    }
 
-select option {
-    padding: 10px;
-    font-size: 16px;
-}
-textarea{
-    border-radius: 4px;
-    background-color: #060608 !important;
-    color: #e9ecef !important;
-    background-color: #2a2a2a;
+    select option {
+        padding: 10px;
+        font-size: 16px;
+    }
+    
+    textarea {
+        border-radius: 4px;
+        background-color: #111419 !important;
+        color: #e9ecef !important;
         font-size: 12px;
-
-}
-textarea:focus {
-    border-color: #FFD700 !important;
-    outline: none !important;
-}
+    }
+    
+    textarea:focus {
+        border-color: #FFD700 !important;
+        outline: none !important;
+    }
 </style>
 
 {% endblock extrahead %}
