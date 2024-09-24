@@ -34,17 +34,6 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.name or 'Anonymous'}"
     
-# class ManualReport(models.Model):
-#     name = models.CharField(max_length=100)  # Required
-#     email = models.EmailField(blank=True, null=True)  # Optional 
-#     phone_number = models.IntegerField()  # Required and unique
-#     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # ForeignKey to Department model
-#     purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, null=True)  # ForeignKey to Purpose model
-#     other_purpose = models.CharField(max_length=255, blank=True, null=True)  # Optional additional detail 
-#     time = models.DateTimeField()  # Allows manual input
-#     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for review creation
 
-#     def __str__(self):
-#         return f"Manual Report by {self.name or 'Anonymous'}"
 
 

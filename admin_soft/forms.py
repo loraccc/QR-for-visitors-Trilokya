@@ -12,7 +12,7 @@ class RegistrationForm(UserCreationForm):
   password1 = forms.CharField(
       label=_("Password"),
       widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
-  )
+  ) 
   password2 = forms.CharField(
       label=_("Password Confirmation"),
       widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password Confirmation'}),
@@ -121,17 +121,21 @@ class FullReviewForm(forms.ModelForm):
         if self.instance and self.instance.purpose and self.instance.purpose != 'Other':
             self.fields['other_purpose'].widget.attrs.update({'style': 'display:none;'})
 
-    def clean(self):
-        cleaned_data = super().clean()
-        purpose = cleaned_data.get('purpose')
-        other_purpose = cleaned_data.get('other_purpose')
+def clean(self):
+    cleaned_data = super().clean()
+    purpose = cleaned_data.get('purpose')
+    other_purpose = cleaned_data.get('other_purpose')
 
-        if purpose == 'Other' and not other_purpose:
-            self.add_error('other_purpose', 'Please specify your purpose if "Other" is selected.')
-        elif purpose != 'Other' and other_purpose:
-            self.add_error('other_purpose', 'Additional details should only be filled if "Other" is selected.')
+    # If purpose is 'Other', other_purpose must be filled
+    if purpose == 'Other' and not other_purpose:
+        self.add_error('other_purpose', 'Please specify your purpose if "Other" is selected.')
+    
+    # If purpose is not 'Other', other_purpose should be empty
+    elif purpose != 'Other' and other_purpose:
+        cleaned_data['other_purpose'] = ''  # Clear the value since it shouldn't be filled
 
-        return cleaned_data
+    return cleaned_data
+
 
 
 class SimpleReviewForm(forms.ModelForm):
