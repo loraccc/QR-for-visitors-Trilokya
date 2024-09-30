@@ -257,6 +257,28 @@ def export_visitor_statistics_csv(request):
     response['Content-Disposition'] = 'attachment; filename="visitor_statistics.csv"'
 
     writer = csv.writer(response)
+    # Updated CSV header to include 'Organization Name'
+    writer.writerow(['Name', 'Email', 'Phone Number', 'Organization', 'Department', 'Purpose', 'Review', 'Created At'])
+
+    reviews = Review.objects.all()
+    for review in reviews:
+        writer.writerow([
+            review.name,
+            review.email,
+            review.phone_number,
+            review.organization_name if review.organization_name else 'N/A',  # Get organization name
+            review.department.name if review.department else 'N/A',  # Get department name
+            review.purpose.name if review.purpose else 'N/A',  # Get purpose name
+            review.review,
+            review.created_at.strftime('%Y-%m-%d %H:%M:%S') if review.created_at else 'N/A',  # Handle null created_at
+        ])
+
+    return response
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="visitor_statistics.csv"'
+
+    writer = csv.writer(response)
     writer.writerow(['Name', 'Email', 'Phone Number', 'Department', 'Purpose', 'Review', 'Created At'])
 
     reviews = Review.objects.all()
@@ -265,6 +287,7 @@ def export_visitor_statistics_csv(request):
             review.name,
             review.email,
             review.phone_number,
+            review.organization_name if review.organization_name else 'N/A',  # Get organization name
             review.department.name if review.department else 'N/A',  # Get department name
             review.purpose.name if review.purpose else 'N/A',  # Get purpose name
             review.review,
@@ -290,7 +313,7 @@ def add_user(request):
             try:
                 user = User.objects.create_user(username=username, password=password)
                 messages.success(request, 'User created successfully.')
-                return redirect('add_user')  # Redirect to avoid form resubmission
+                return redirect('add_user')  
             except IntegrityError:
                 messages.error(request, 'User with this username already exists.')
             except Exception as e:
