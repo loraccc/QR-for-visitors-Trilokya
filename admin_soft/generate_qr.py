@@ -30,7 +30,7 @@ def generate_qr_code():
     img = qr.make_image(fill_color="white", back_color="red")
 
     # Save or display the QR code image as needed
-    img.save("qr_code_review_form.png")
+    img.save("static/img/qr_code_review_form.png")
 
 
 generate_qr_code()
