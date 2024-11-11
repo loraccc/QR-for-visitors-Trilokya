@@ -181,7 +181,7 @@ def dashboard(request):
     return render(request, 'pages/dashboard.html', context)
 
 
-def thank_you_view(request):
+def thank_you_view(request):   
     return render(request, 'pages/thankyou.html')
 def thanks(request):
     return render(request, 'pages/thanks.html')

@@ -38,7 +38,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1', 
-    'http://3.7.86.136/'     # replace with your domain
+    'http://3.7.86.136/',
+    'https://pdev.trilokyasoft.com/'   # replace with your domain
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
