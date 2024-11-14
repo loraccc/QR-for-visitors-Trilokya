@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
 # Retrieve the FRONTEND_URL from environment variables
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:8000/')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:8000/') #changes
 
 
 
